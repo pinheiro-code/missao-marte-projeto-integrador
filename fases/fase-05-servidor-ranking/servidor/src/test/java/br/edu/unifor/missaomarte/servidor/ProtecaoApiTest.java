@@ -42,8 +42,8 @@ class ProtecaoApiTest extends ApiTeste {
     }
 
     @Test
-    void tokenAssinadoComOutroSegredoDa401() throws Exception {
-        byte[] outro = "outro-segredo-qualquer-com-mais-de-32-bytes".getBytes(StandardCharsets.UTF_8);
+    void tokenAssinadoPorUmFalsificadorDa401() throws Exception {
+        byte[] outro = "chave-de-um-falsificador-com-mais-de-32-bytes".getBytes(StandardCharsets.UTF_8);
         JwtEncoder falsificador = NimbusJwtEncoder.withSecretKey(new SecretKeySpec(outro, "HmacSHA256"))
                 .algorithm(MacAlgorithm.HS256).build();
         Instant agora = Instant.now();

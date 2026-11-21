@@ -46,15 +46,7 @@ public class Usuario {
         return nome;
     }
 
-    public String getNomeNormalizado() {
-        return nomeNormalizado;
-    }
-
     public String getHashSenha() {
         return hashSenha;
-    }
-
-    public LocalDateTime getCriadoEm() {
-        return criadoEm;
     }
 }

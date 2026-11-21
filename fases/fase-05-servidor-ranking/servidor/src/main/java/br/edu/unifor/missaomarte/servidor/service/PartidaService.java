@@ -37,7 +37,7 @@ public class PartidaService {
     }
 
     public PartidaResponse registrar(Long usuarioId, PartidaRequest pedido) {
-        // Token válido de um usuário que não existe mais (banco apagado com o mesmo segredo).
+        // Token ainda válido de um usuário que não existe mais (banco apagado com o servidor no mesmo ar).
         Usuario dono = usuarios.findById(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário do token não existe."));
         LocalDateTime agora = LocalDateTime.now(relogio).truncatedTo(ChronoUnit.SECONDS);
@@ -48,6 +48,10 @@ public class PartidaService {
 
     public List<PartidaResponse> historico(Long usuarioId, int pagina, int tamanho) {
         List<PartidaResponse> resposta = new ArrayList<>();
+        // Página tão distante que o deslocamento não cabe num int: não há partidas lá (sem isso, 500).
+        if ((long) pagina * tamanho > Integer.MAX_VALUE) {
+            return resposta;
+        }
         for (Partida partida : partidas.findByUsuarioIdOrderByDataHoraDescIdDesc(usuarioId,
                 PageRequest.of(pagina, tamanho))) {
             resposta.add(paraResposta(partida));

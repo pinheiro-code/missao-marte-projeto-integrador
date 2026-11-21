@@ -82,6 +82,39 @@ class PartidaApiTest extends ApiTeste {
     }
 
     @Test
+    void enumMandadoComoNumeroDa400() throws Exception {
+        String token = tokenDe("xuxa");
+        String resultadoZero = "{\"dificuldade\":\"FACIL\",\"resultado\":0,\"pontuacao\":10,"
+                + "\"duracaoSegundos\":10,\"movimentos\":10}";
+        postarComToken("/api/partidas", token, resultadoZero)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.erros[0].campo").value("resultado"));
+        postarComToken("/api/partidas", token, partida("2", "VITORIA", 10, 10, 10))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.erros[0].campo").value("dificuldade"));
+    }
+
+    @Test
+    void numeroDecimalTextoOuGrandeDemaisNoLugarDeInteiroDa400() throws Exception {
+        String token = tokenDe("yuri");
+        for (String pontuacao : new String[] { "10.9", "\"120\"", "3000000000" }) {
+            String corpo = "{\"dificuldade\":\"FACIL\",\"resultado\":\"VITORIA\",\"pontuacao\":" + pontuacao
+                    + ",\"duracaoSegundos\":10,\"movimentos\":10}";
+            postarComToken("/api/partidas", token, corpo)
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.erros[0].campo").value("pontuacao"));
+        }
+    }
+
+    @Test
+    void paginaMuitoDistanteDevolveListaVazia() throws Exception {
+        String token = tokenDe("zilda");
+        historico(token, "?pagina=50000000&tamanho=50")
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
     void valorForaDaFaixaDa400() throws Exception {
         String token = tokenDe("zeca");
         postarComToken("/api/partidas", token, partida("FACIL", "VITORIA", 100001, 10, 10))

@@ -138,8 +138,8 @@ class CadastroApiTest extends ApiTeste {
 
     @Test
     void toStringDoCadastroNaoMostraASenha() {
-        String texto = new CadastroRequest("kiko", "senha-secreta-9").toString();
+        String texto = new CadastroRequest("kiko", "senha-escondida-9").toString();
         assertTrue(texto.contains("kiko"));
-        assertFalse(texto.contains("senha-secreta-9"));
+        assertFalse(texto.contains("senha-escondida-9"));
     }
 }

@@ -73,8 +73,8 @@ class LoginApiTest extends ApiTeste {
 
     @Test
     void toStringDoLoginNaoMostraASenha() {
-        String texto = new LoginRequest("rita", "senha-secreta-9").toString();
+        String texto = new LoginRequest("rita", "senha-escondida-9").toString();
         assertTrue(texto.contains("rita"));
-        assertFalse(texto.contains("senha-secreta-9"));
+        assertFalse(texto.contains("senha-escondida-9"));
     }
 }

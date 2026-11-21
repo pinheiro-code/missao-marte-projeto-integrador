@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jayway.jsonpath.JsonPath;
 
-// Base dos testes de API: H2 em memória, segredo de teste e cada teste desfeito no fim.
+// Base dos testes de API: H2 em memória, propriedades de teste e cada teste desfeito no fim.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional

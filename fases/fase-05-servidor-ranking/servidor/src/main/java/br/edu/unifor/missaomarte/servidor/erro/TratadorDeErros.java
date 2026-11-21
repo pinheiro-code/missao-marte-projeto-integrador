@@ -22,6 +22,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.exc.InputCoercionException;
 import tools.jackson.databind.DatabindException;
 
 // Todo erro sai como ProblemDetail (RFC 9457), sem mensagem interna nem stack trace.
@@ -60,12 +62,14 @@ public class TratadorDeErros extends ResponseEntityExceptionHandler {
         return invalido(List.of(new ErroDeCampo(ex.getPropertyName(), "Valor inválido.")));
     }
 
-    // Enum desconhecido ou tipo errado num campo (DatabindException): o nome do campo sai do caminho da exceção.
+    // Enum desconhecido, tipo errado ou número grande demais num campo: o nome do campo sai do caminho da exceção.
     // JSON quebrado é erro de leitura, mesmo quando cortado no meio de um campo: só um texto genérico.
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
             HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        if (ex.getCause() instanceof DatabindException jackson && !jackson.getPath().isEmpty()) {
+        if (ex.getCause() instanceof JacksonException jackson
+                && (jackson instanceof DatabindException || jackson instanceof InputCoercionException)
+                && !jackson.getPath().isEmpty()) {
             String campo = jackson.getPath().get(jackson.getPath().size() - 1).getPropertyName();
             if (campo != null) {
                 return invalido(List.of(new ErroDeCampo(campo, "Valor inválido.")));
