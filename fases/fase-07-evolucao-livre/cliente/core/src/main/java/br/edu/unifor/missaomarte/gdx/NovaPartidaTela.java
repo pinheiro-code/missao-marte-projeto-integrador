@@ -42,7 +42,7 @@ public class NovaPartidaTela extends TelaBase {
         texto("NOVA MISSÃO", 340, 500, Color.ORANGE);
         if (modoToque()) {
             texto("Dificuldade: " + dificuldade, 340, 475, Color.WHITE);
-            MundoRenderer.desenharNaveColorida(batch(), recursos(), cor, 600, 455, 40, 0);
+            MundoRenderer.desenharNaveColorida(batch(), recursos(), cor, 505, 455, 40, 0);
             batch().end();
             return;
         }

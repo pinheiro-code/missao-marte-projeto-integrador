@@ -37,6 +37,12 @@ deixou (teclado e toque).
 | `LayoutDeOpcoes` (botões do modo toque) | o botão Cor é mais uma linha da Nova partida (4 linhas cabem nos 430 de altura com o mínimo de 80) |
 | `TelaBase.rotulo(botao)` | o texto do botão mostra a cor atual, como o botão do nome já mostrava o nome digitado |
 
+### A base escolhida
+
+A fase 7 de referência do professor tem um modo dinâmico, o tiro e 208 testes; a base desta fase é a fase 6 da
+equipe (por turnos, sem modo dinâmico e sem tiro), porque o enunciado do AVA manda não copiar o código de
+referência. Toda a melhoria foi pensada para o modo por turnos.
+
 ### O que não servia como estava
 
 - **O nome do pacote da porta.** `ArmazemDeTexto` mora em `application/servidor`, um nome que diz "servidor",
@@ -45,6 +51,9 @@ deixou (teclado e toque).
 - **A amostra da Nova partida.** A Nova partida não tinha acesso ao desenho da nave (ele era privado do
   `MundoRenderer`). O desenho tingido virou um método estático do `MundoRenderer`
   (`desenharNaveColorida`), usado pela partida e pela amostra, para a tinta ter uma regra só.
+- **O `Tab` já tinha outro papel.** Nas telas de entrar e do servidor (fase 6), o `Tab` troca de campo. Na Nova
+  partida ele troca a cor, porque as setas já mudam a dificuldade e as letras são o nome; a diferença fica
+  registrada aqui e no README.
 - **A sequência da semente 4.** O "4/4 e 30 movimentos" do roteiro (F7, seção 9, passo 3) é do mapa do professor;
   no mapa da equipe a mesma sequência não vence (ver 8.4). O teste de compatibilidade protege o resultado medido
   na base, não o do enunciado.
@@ -114,8 +123,8 @@ com o mesmo resultado.
 5. `CorDaNave`, `PreferenciaDaNave` e os 11 testes. Commit.
 6. A tela, o desenho e o jogo: `NovaPartidaTela` (`Tab`, botão, amostra), `MundoRenderer` (tinta),
    `PartidaTela` (lê a cor) e `MissaoMarteGame` (cria a preferência). Commit.
-7. **Problema real:** no meio do caminho, a fase 6 recebeu, na revisão do PR dela, duas correções (toque
-   cancelado, espera no fim da partida e endereço recusado na caixa nativa; 267 → 269 testes). Elas estavam só em
+7. **Problema real:** no meio do caminho, a fase 6 recebeu, na revisão do PR dela, três correções, em dois
+   commits (toque cancelado, espera no fim da partida e endereço recusado na caixa nativa; 267 → 269 testes). Elas estavam só em
    `fases/fase-06-android`, e a cópia da fase 7 tinha nascido antes. Solução, sem rebase nem `--force`:
    `git merge origin/mm-10-android`; os arquivos que a fase 7 não tinha alterado foram trocados pela versão nova
    da fase 6 e conferidos com `diff -r` (sobrou só o que a melhoria mudou); a `PartidaTela`, que a fase 7 tinha
@@ -129,6 +138,11 @@ com o mesmo resultado.
 10. Jogo aberto em 800x600 sem toque, 1200x540 e 540x960 com toque; capturas em `docs/capturas/`. Valor inválido
     gravado à mão nas Preferences para ver o padrão voltar.
 11. README, este tutorial e a linha da fase 7 no README da raiz. Commit.
+12. Revisão de contexto limpo (um revisor que não escreveu o código): nenhum achado grave. Aplicados: o README do
+    cliente ainda dizia "fase 6" e que as Preferences guardam só o servidor (corrigido); a amostra do modo toque
+    ficava em cima do planeta do fundo, onde a Vermelha some (movida para a esquerda dele, capturas `03`, `04` e
+    `06` refeitas); o `Tab` também chega à tela como caractere digitado (`'	'`) no LWJGL3, e um teste novo
+    (`TabNaNovaPartidaTest`) prende que ele não entra no nome. Cliente com 282 testes. Commit.
 
 ## 8.4 Testes e evidências
 
@@ -138,20 +152,21 @@ com o mesmo resultado.
 |---|---|
 | `CorDaNaveTest` (6) | a ordem das cores; a primeira é a Original e é o `padrao()`, com RGB 1, 1, 1; `proxima()` segue a ordem e, depois da última, volta à primeira; percorrer todas volta ao começo; nomes em português; componentes entre 0 e 1 e só a Original sem tinta |
 | `PreferenciaDaNaveTest` (5) | sem valor gravado vale a Original; salvar e ler (e ler de novo com outra instância sobre o mesmo armazém, como depois de fechar e abrir); valores inválidos (`""`, espaços, `roxa`, `azul` minúsculo, `AZUL ` com espaço, `Azul`, `7`) voltam à Original; grava só a chave `nave.cor`, com o nome da constante; não mexe nas chaves do servidor |
+| `TabNaNovaPartidaTest` (1) | o `Tab`, que no LWJGL3 também chega como caractere digitado, não entra no nome do piloto (ele troca a cor no `teclaApertada`) |
 | `PartidaSemente4Test` (1) | compatibilidade: a sequência `wwdwdwewedsdseaasasasasasasedwdwdw` (F7, seção 7), cada letra convertida pelo `TecladoParaAcao` como na tela (o `e` é EMBARCAR), um único `Random(4)` para a fábrica e para a sessão, como no lançador, mapa 5 e Fácil: 2 de 4 entregues, 25 pontos, 30 movimentos, 2 vidas, nenhum a bordo, partida sem fim. Medido na cópia da fase 6 antes da melhoria |
 
 Os 269 testes da fase 6 continuam sem alteração (`diff -r ../../fase-06-android/cliente/core/src/test
 core/src/test` só mostra os arquivos novos). A tela e o desenho não têm teste de unidade (dependem de uma janela
 OpenGL); a lógica deles fica nas duas classes de `application`, que têm.
 
-### Saídas (`bash tarefas/.../provas-b.sh`, 21/11/2026)
+### Saídas (trechos de `bash tarefas/.../provas-b.sh`, 21/11/2026, com os cabeçalhos resumidos)
 
 ```text
 == cliente (fases/fase-07-evolucao-livre/cliente)
 Gradle 8.7
 clean build exit 0
 BUILD SUCCESSFUL in 4s
-soma cliente: 281 0 0 0          (testes, ignorados, falhas, erros; 269 da fase 6 + 12 novos)
+soma cliente: 282 0 0 0          (testes, ignorados, falhas, erros; 269 da fase 6 + 13 novos)
 diff testes (vazio acima = ok)
 
 == servidor (fases/fase-07-evolucao-livre/servidor)
@@ -188,7 +203,7 @@ commits no PartidaSemente4Test: 1
 |---|---|---|
 | `01-nova-partida-azul-800x600.png` | 800x600 sem toque | Nova partida depois de 3 `Tab`: Azul, com a amostra azul |
 | `02-partida-nave-azul-800x600.png` | 800x600 sem toque | a partida com a nave azul; propulsor, passageiros, perigos e base sem tinta |
-| `03-cor-mantida-ao-reabrir-toque-1200x540.png` | 1200x540 com toque | o jogo fechado e aberto de novo: a Nova partida já começa em Azul |
+| `03-cor-mantida-ao-reabrir-toque-1200x540.png` | 1200x540 com toque | Azul escolhida com 3 toques, Voltar e Sair sem decolar; o jogo aberto de novo: a Nova partida já começa em Azul |
 | `04-botao-cor-amarela-toque-1200x540.png` | 1200x540 com toque | um clique no botão Cor: Amarela |
 | `05-partida-nave-amarela-toque-1200x540.png` | 1200x540 com toque | a partida com a nave amarela e os botões da fase 6 |
 | `06-botao-cor-rosa-toque-540x960.png` | 540x960 com toque | retrato: o botão Cor em Rosa, nada fora da tela nem sobreposto |
@@ -226,7 +241,7 @@ vazio; `CorDaNave` e `PreferenciaDaNave` não importam nada do libGDX.
 
 1. **A nave do menu principal** continua na cor original; pintá-la também deixaria a escolha visível desde a
    abertura.
-2. **Acessibilidade:** a amostra é pequena (40 px no modo toque) e fica sobre o planeta do fundo; as cores
+2. **Acessibilidade:** a amostra é pequena (40 px no modo toque); as cores
    poderiam ter também um padrão ou um nome maior para quem não distingue bem as cores.
 3. **Mais personalização:** a mesma `PreferenciaDaNave` poderia guardar o rastro do propulsor ou um sprite
    alternativo; hoje só a cor existe.
@@ -241,7 +256,7 @@ vazio; `CorDaNave` e `PreferenciaDaNave` não importam nada do libGDX.
 | passo | resultado |
 |---|---|
 | 1. `gradlew --version` | cliente: Gradle 8.7, JVM 17; servidor: Gradle 9.8.2, JVM 17.0.21.1 (Eclipse Adoptium) |
-| 2. `gradlew test` (servidor) e `gradlew clean build` (cliente) | `BUILD SUCCESSFUL` nos dois: servidor 52 testes, cliente 281, sem falha |
+| 2. `gradlew test` (servidor) e `gradlew clean build` (cliente) | `BUILD SUCCESSFUL` nos dois: servidor 52 testes, cliente 282, sem falha |
 | 3. Semente 4 no modo clássico | a sequência do enunciado não vence no mapa da equipe: 2 de 4 entregues, 25 pontos, 30 movimentos, 2 vidas, igual na base e no final (`PartidaSemente4Test`). O "4/4" do enunciado é do mapa do professor; o 4/4 do tutorial da fase 4 é de uma partida jogada à mão, não desta sequência |
 | 4. 800x600 sem toque com o layout da base | menu, partida e fim iguais; a Nova partida tem a linha nova da cor (capturas `01`, `08`, `09`) |
 | 5. `-Dmissaomarte.toque=true` com o mouse | o botão Cor troca a cor e a partida usa a escolhida (capturas `04`, `05`) |

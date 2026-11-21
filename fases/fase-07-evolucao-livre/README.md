@@ -28,18 +28,29 @@ cd servidor
 
 # cliente
 cd cliente
-.\gradlew clean build                   # 281 testes, sem precisar do SDK
+.\gradlew clean build                   # 282 testes, sem precisar do SDK
 .\gradlew :lwjgl3:run --console=plain   # desktop 800x600, sem toque
 .\gradlew :lwjgl3:run "-Dmissaomarte.toque=true" "-Dmissaomarte.janela=1200x540" --console=plain
 ```
 
-As opções `-Dmissaomarte.*` e `-PservidorPadrao` são as da fase 6 (tabela no README da fase 6).
+## Opções (as mesmas da fase 6)
+
+| opção | onde | padrão | para quê |
+|---|---|---|---|
+| `-Dmissaomarte.toque=true` | desktop | desligado | mostra os botões virtuais; o mouse faz o papel do dedo |
+| `-Dmissaomarte.janela=LxA` | desktop | `800x600` | abre a janela no tamanho pedido (ex.: `1200x540`, `540x960`); inválido vale 800x600 |
+| `-Dmissaomarte.servidor=http://host:porta` | desktop | `http://localhost:8080` | padrão do servidor; o endereço salvo no jogo ganha dele |
+| `-Dmissaomarte.semente=4` | desktop | sorteio livre | mesmo mapa e mesmos inimigos na primeira partida |
+| `-Dmissaomarte.semaudio=true` | desktop | com som | máquina sem dispositivo de som |
+| `-PservidorPadrao=http://host:porta` | build do APK | `http://localhost:8080` | padrão do servidor no APK; valor inválido faz o build falhar |
+
+APK (só com o Android SDK): `.\gradlew :android:assembleDebug` gera `android/build/outputs/apk/debug/android-debug.apk`.
 
 ## Controles novos
 
 | onde | teclado | toque (Android ou `-Dmissaomarte.toque=true`) |
 |---|---|---|
-| Nova partida | `Tab` passa para a próxima cor (as setas continuam mudando a dificuldade e as letras são o nome) | botão **Cor da nave: <cor>**, entre a dificuldade e o Decolar |
+| Nova partida | `Tab` passa para a próxima cor (as setas continuam mudando a dificuldade e as letras são o nome; nas telas de entrar e do servidor o `Tab` continua trocando de campo) | botão **Cor da nave: <cor>**, entre a dificuldade e o Decolar |
 
 As cores, na ordem: Original (o sprite sem tinta), Vermelha, Verde, Azul, Amarela e Rosa; depois da Rosa volta a
 Original. A cor é gravada a cada troca na chave `nave.cor` das Preferences `missaomarte` (no desktop,
@@ -47,7 +58,16 @@ Original. A cor é gravada a cada troca na chave `nave.cor` das Preferences `mis
 ou estragado vale a Original, sem erro. Na partida, só o desenho da nave muda de cor: o propulsor, os
 passageiros, os perigos, a base e o painel ficam iguais.
 
-O resto dos controles é o da fase 6.
+O resto dos controles é o da fase 6:
+
+| tela | teclado | toque |
+|---|---|---|
+| Menu | `1` a `6` (no modo convidado: Jogar, Ranking local, Limpar ranking local, Entrar ou criar conta, Sair, Servidor) | um botão por opção |
+| Nova partida | letras digitam o nome, setas mudam a dificuldade, `Tab` a cor, `Enter` decola, `Esc` volta | Nome, `< Dificuldade`, `Dificuldade >`, Cor, Decolar, Voltar |
+| Partida | `W`/`A`/`S`/`D` ou setas movem (segure para repetir), `E` embarca, `Q` ou `Esc` aborta, `M` som | setas em cruz, Embarcar no meio, Som e Abortar |
+| Fim, ranking, entrar, servidor | como na fase 6 (README da fase 6) | botões na tela |
+
+Tecla Voltar do Android: no menu fecha o jogo; no fim da partida faz o mesmo que Continuar; nas outras telas, o mesmo que o `Esc`.
 
 ## Limitações
 
