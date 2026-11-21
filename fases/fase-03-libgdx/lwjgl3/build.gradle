@@ -1,0 +1,22 @@
+apply plugin: 'application'
+
+dependencies {
+    implementation project(':core')
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+application {
+    mainClass = 'br.edu.unifor.missaomarte.lwjgl3.DesktopLauncher'
+}
+
+tasks.named('run') {
+    // o ranking.json fica na raiz da fase, não dentro de lwjgl3/
+    workingDir = rootProject.projectDir
+    // o -D do gradlew fica no processo do Gradle; sem repassar, o jogo não vê
+    systemProperty 'missaomarte.semente', System.getProperty('missaomarte.semente', '')
+    systemProperty 'missaomarte.semaudio', System.getProperty('missaomarte.semaudio', '')
+    if (System.getProperty('os.name').toLowerCase().contains('mac')) {
+        jvmArgs '-XstartOnFirstThread'
+    }
+}
