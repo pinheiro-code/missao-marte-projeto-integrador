@@ -1,0 +1,39 @@
+> Task :core:compileJava UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :lwjgl3:compileJava
+> Task :lwjgl3:processResources UP-TO-DATE
+> Task :lwjgl3:classes
+
+> Task :lwjgl3:run
+[MissaoMarte] create() sem áudio
+[Recursos] 17 imagens e 0 sons carregados
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.hide()
+[Tela] EntrarTela.show()
+[Tela] EntrarTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[MissaoMarte] entrou como piloto_um
+[Tela] EntrarTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] EntrarTela.dispose()
+[Tela] MenuTela.hide()
+[Tela] RankingTela.show()
+[Tela] RankingTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[MissaoMarte] saiu da conta
+[Tela] RankingTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] RankingTela.dispose()
+[Tela] MenuTela.pause()
+[MissaoMarte] dispose()
+[Tela] MenuTela.hide()
+[Tela] MenuTela.dispose()
+
+BUILD SUCCESSFUL in 54s
+5 actionable tasks: 2 executed, 3 up-to-date

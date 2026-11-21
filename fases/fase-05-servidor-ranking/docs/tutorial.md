@@ -213,6 +213,7 @@ Problemas encontrados e como foram resolvidos:
 | Resource server só aceita RS256 | enunciado | `JwtEncoder` e `JwtDecoder` com a mesma chave HS256 |
 | 401 do token com corpo vazio | padrão do Spring Security | ponto de entrada próprio que mantém o `WWW-Authenticate` e escreve o `ProblemDetail` (o cliente aceita corpo vazio do mesmo jeito: `ServidorHttpTest.naoAutorizadoComCorpoVazioCaiNoTextoPorCodigo`) |
 | JSON cortado virava erro de campo; `"resultado":0` gravava `VITORIA`; página distante dava 500 | `curl` e revisão de contexto limpo no servidor | tratador de erros, três chaves `spring.jackson.*` e lista vazia no serviço, cada um com teste |
+| Endereço com barra no fim (`http://localhost:8080/`) viraria `//api/...` | revisão de contexto limpo do cliente | o launcher tira a barra final |
 | **Servidor desligado mostrava "código -1" no fim da partida** | roteiro, passo 11, na janela (`capturas` não guardam a tela errada; o log da execução C mostra a partida) | com a porta fechada, o `Net` do LWJGL3 não chama `failed`: chama `handleHttpResponse` com status -1. O `ServidorHttp` trata status abaixo de 100 como "Não foi possível conectar ao servidor." Teste `statusMenosUmDoDesktopViraFalhaDeConexao` |
 | Reenviar com `R` depois de reiniciar o servidor daria 401 | leitura do `application.properties` antes do passo 11 | sem `MISSAOMARTE_JWT_SEGREDO`, cada subida gera um segredo novo e o token antigo deixa de valer. Nas provas, a variável ficou fixa (fora do Git); sem ela, o jogador veria "Sessão expirada", que é o comportamento certo para token inválido |
 | Teste esperava `MEDIO` na linha do histórico | primeiro `clean build` das telas | o `toString` do `Dificuldade` da fase 4 mostra "Médio", que é melhor para quem joga; o teste foi corrigido, não o código |
@@ -248,7 +249,7 @@ Nenhum teste abre janela, usa OpenGL ou acessa a rede: o `Net` e o servidor são
 partida com envio), `f5-ranking-global.png`, `f5-derrota-enviada.png`, `f5-historico.png`,
 `f5-ranking-depois-da-derrota.png`, `f5-ranking-dois-jogadores.png`, `f5-envio-falhou.png`,
 `f5-reenvio-ok.png`, `f5-servidor-desligado.png`, `f5-convidado-sem-servidor.png`, `f5-saiu-da-conta.png`,
-`f5-ranking-local-de-novo.png`.
+`f5-ranking-local-de-novo.png`, `f5-sessao-expirada.png`, `f5-menu-logado-barra-final.png`.
 
 **Chamadas diretas à API:** `servidor/docs/roteiro-api.sh` com 16 passos e "Falhas: 0", saída em
 `servidor/docs/evidencias.md`, seção 4.
@@ -270,9 +271,9 @@ O que difere da fase 4 e por quê:
 | `gdx/MissaoMarteGame` | alterado | recebe o endereço, cria o adaptador no `create()` (antes disso `Gdx.net` não existe) e é o dono da `Sessao` |
 | `gdx/MenuTela` | alterado | opções por modo, entrar e sair da conta, aviso de sessão expirada |
 | `gdx/NovaPartidaTela` | alterado | logado usa o nome da conta |
-| `gdx/PartidaTela` | alterado | logado envia vitória e derrota e mostra o estado do envio; convidado igual à fase 4 |
+| `gdx/PartidaTela` | alterado | logado envia vitória e derrota e mostra o estado do envio; para caber a linha do envio, o quadro do fim ficou mais alto nos dois modos; o comportamento do convidado é o da fase 4 |
 | `gdx/RankingTela` | alterado | logado mostra o ranking global com estados, `R` e o aviso do Top 10; convidado igual à fase 4 |
-| `lwjgl3/DesktopLauncher`, `lwjgl3/build.gradle` | alterado | lê e repassa `-Dmissaomarte.servidor` |
+| `lwjgl3/DesktopLauncher`, `lwjgl3/build.gradle` | alterado | lê e repassa `-Dmissaomarte.servidor` (vazio vale o padrão; barra no fim é tirada) |
 
 ## Roteiro de validação
 
@@ -291,7 +292,7 @@ a primeira partida de cada execução repete o mapa da semente 4. As teclas fora
 | 5. convidado | partida vencida no fácil (43 pontos, 12 s); `ranking.json` com a linha do "Convidado"; ranking local com o resumo | `f5-menu-convidado.png`, `f5-convidado-vitoria.png`, `f5-convidado-ranking-local.png` |
 | 6. criar conta | menu `4`, `F2`: senha como asteriscos; o jogo entrou sozinho e o menu mostra "Piloto: piloto_um" e "Bem-vindo" | `f5-criar-conta.png`, `f5-menu-logado.png` |
 | 7. vitória logada | nova partida com "piloto_um (sua conta)", sem digitar; vitória com "Resultado enviado."; ranking global com o jogador e "Você está no Top 10!" | `f5-nova-partida-logado.png`, `f5-vitoria-enviada.png`, `f5-ranking-global.png` |
-| 8. segundo jogador | `piloto_dois` criado e com duas vitórias (44 pontos em 12 s e em 27 s): cada jogador aparece uma vez, o `piloto_dois` com a de 12 s | `f5-ranking-dois-jogadores.png`, `evidencias/saida-banco-bcrypt.txt` |
+| 8. segundo jogador | `piloto_dois` criado (execução C) e com duas vitórias: 44 pontos em 12 s, e 44 em 27 s, que é a do reenvio do passo 11 (execução D). Cada jogador aparece uma vez, o `piloto_dois` com a de 12 s | `f5-ranking-dois-jogadores.png`, `evidencias/saida-banco-bcrypt.txt` |
 | 9. derrota logada | derrota no difícil com "Resultado enviado."; histórico com a derrota e a vitória; ranking igual ao de antes | `f5-derrota-enviada.png`, `f5-historico.png`, `f5-ranking-depois-da-derrota.png` |
 | 10. senha errada | "Usuário ou senha inválidos.", o mesmo texto para nome inexistente (servidor, passo 4) | `f5-senha-errada.png` |
 | 11. servidor parado no fim | primeira tentativa (execução C): a tela mostrou "O servidor recusou o pedido (código -1)." e o `Enter` levou ao menu, perdendo o resultado; corrigido (seção 8.5). Segunda (execução D): "Falha no envio: Não foi possível conectar ao servidor." com `R`; servidor de volta, `R` → "Resultado enviado." | `f5-envio-falhou.png`, `f5-reenvio-ok.png`, `evidencias/saida-run-c.txt`, `-d.txt` |
@@ -301,9 +302,14 @@ a primeira partida de cada execução repete o mapa da semente 4. As teclas fora
 | 15. `com.badlogic` fora de `gdx` e `lwjgl3` | `grep -rln "com.badlogic"` em `domain`, `application` e `infrastructure`: vazio | `evidencias/saida-criterios-10-a-15.txt` |
 | 16. nada mais mudou | hash: 21 de 21 `OK`; `git diff --name-only` contra a branch da fase 4 só lista `fases/fase-05-servidor-ranking/` e o `README.md` da raiz | `evidencias/hash-fase-04-x-fase-05.txt`, `evidencias/saida-criterios-10-a-15.txt` |
 
+**Sessão expirada** (execução E, depois da revisão): com o jogador logado, o servidor foi reiniciado sem
+`MISSAOMARTE_JWT_SEGREDO` (novo segredo aleatório, o token antigo deixa de valer); no menu, `2` pediu o
+ranking, o servidor respondeu 401 e o jogo voltou ao menu do convidado com "Sessão expirada. Entre de novo."
+(`f5-sessao-expirada.png`, `evidencias/saida-run-e.txt`). Nessa execução o endereço foi passado com barra no
+fim (`http://localhost:8080/`), e o login funcionou (`f5-menu-logado-barra-final.png`).
+
 Não verificado: o som (as execuções foram sem áudio, que é igual à fase 4); as teclas vieram por mensagem
-direta à janela, não de um teclado físico; o aviso "Sessão expirada" não apareceu na janela, porque o token
-não expirou durante o roteiro (o caminho está no `EnvioDaPartidaTest` e no `ServidorHttpTest`). O
+direta à janela, não de um teclado físico. O
 `exercicio10/src` do enunciado é do repositório do professor e não existe neste repositório; as fases 0 a 4
 foram conferidas pelo `git diff`.
 

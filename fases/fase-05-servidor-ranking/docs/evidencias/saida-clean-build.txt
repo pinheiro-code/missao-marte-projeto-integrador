@@ -32,3 +32,6 @@ Gradle 8.7
 BUILD SUCCESSFUL in 5s
 12 actionable tasks: 12 executed
 saida=0
+
+$ cat core/build/test-results/test/*.xml | grep -o 'tests=...' | awk (soma do critério 10)
+140 0 0 0

@@ -62,7 +62,7 @@ O cliente funciona sem o servidor: no modo convidado nada vai para a rede.
 | Entrar ou criar conta | nome e senha (senha com `*`), `Tab` ou setas trocam o campo, `F2` alterna entrar e criar conta, `Enter` confirma, `Esc` volta; o `M` é letra | |
 | Meu histórico | | últimas 10 partidas, `R` recarrega, `Enter` ou `Esc` volta |
 
-Em toda tela que não digita texto, `M` liga e desliga o som. Abortar a partida não envia nada. Resposta 401 em qualquer chamada do modo logado descarta a sessão, mostra "Sessão expirada" e volta ao menu do convidado.
+Em toda tela que não digita texto, `M` liga e desliga o som. Abortar a partida não envia nada. Resposta 401 numa chamada do modo logado (com a tela que pediu ainda aberta) descarta a sessão, mostra "Sessão expirada" e volta ao menu do convidado. O nome mostrado no jogo é o digitado ao entrar; o ranking mostra o nome como foi cadastrado (o login não diferencia maiúscula).
 
 ## API (resumo)
 
