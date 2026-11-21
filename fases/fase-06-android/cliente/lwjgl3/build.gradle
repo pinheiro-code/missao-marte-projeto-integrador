@@ -20,6 +20,8 @@ tasks.named('run') {
     systemProperty 'missaomarte.semente', System.getProperty('missaomarte.semente', '')
     systemProperty 'missaomarte.semaudio', System.getProperty('missaomarte.semaudio', '')
     systemProperty 'missaomarte.servidor', System.getProperty('missaomarte.servidor', '')
+    systemProperty 'missaomarte.toque', System.getProperty('missaomarte.toque', '')
+    systemProperty 'missaomarte.janela', System.getProperty('missaomarte.janela', '')
     if (System.getProperty('os.name').toLowerCase().contains('mac')) {
         jvmArgs '-XstartOnFirstThread'
     }

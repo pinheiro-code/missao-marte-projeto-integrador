@@ -12,6 +12,7 @@ import java.util.List;
  * Ranking e, quando vem de uma vitória, o resumo da partida. Enter ou Esc volta ao menu.
  * Convidado: Top 5 local, lido na hora, como na fase 4. Logado: Top 10 global, pedido ao servidor,
  * com estados de carga, R recarrega e o aviso de se o jogador está no Top 10.
+ * No modo toque, Voltar e Recarregar viram botões no canto de baixo.
  */
 public class RankingTela extends TelaBase {
 
@@ -97,7 +98,7 @@ public class RankingTela extends TelaBase {
             y = desenharLinhas(y);
         }
         String rodape = global ? "R recarrega     Enter ou Esc: voltar ao menu     " : "Enter ou Esc: voltar ao menu     ";
-        texto(rodape + jogo.tocador().estado(), 40, 60, Color.LIGHT_GRAY);
+        texto((modoToque() ? "" : rodape) + jogo.tocador().estado(), 40, 60, Color.LIGHT_GRAY);
         batch().end();
     }
 
@@ -115,6 +116,19 @@ public class RankingTela extends TelaBase {
                     noTop10 ? Color.GREEN : Color.LIGHT_GRAY);
         }
         return y;
+    }
+
+    @Override
+    protected List<BotaoVirtual> montarBotoes(float largura, float altura) {
+        LayoutDeOpcoes layout = new LayoutDeOpcoes(400, 10, 390, 90);
+        return (global ? layout.linha("recarregar", "Recarregar", "voltar", "Voltar") : layout.linha("voltar", "Voltar"))
+                .montar();
+    }
+
+    /** O mesmo código da tecla: R recarrega, Enter volta. */
+    @Override
+    protected void aoTocar(String id, int ponteiro) {
+        teclaApertada(id.equals("recarregar") ? Keys.R : Keys.ENTER);
     }
 
     @Override

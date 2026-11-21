@@ -2,6 +2,8 @@ package br.edu.unifor.missaomarte.gdx;
 
 import br.edu.unifor.missaomarte.application.MissaoFactory;
 import br.edu.unifor.missaomarte.application.RankingService;
+import br.edu.unifor.missaomarte.application.servidor.ArmazemDeTexto;
+import br.edu.unifor.missaomarte.application.servidor.EnderecoDoServidor;
 import br.edu.unifor.missaomarte.application.servidor.ServidorDoJogo;
 import br.edu.unifor.missaomarte.application.servidor.Sessao;
 import br.edu.unifor.missaomarte.gdx.rede.ServidorHttp;
@@ -12,15 +14,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import java.time.Clock;
 import java.util.Random;
-import java.util.function.Supplier;
 
 /**
  * O jogo: cria uma vez os recursos que as telas dividem (inclusive imagens e sons) e troca de tela.
- * Fábrica, ranking, sorteio, relógio, a escolha do áudio e o endereço do servidor chegam prontos do launcher.
- * É o único dono da Sessao: com ela o jogo está no modo logado; sem ela, no modo convidado.
+ * Fábrica, ranking, sorteio, relógio, a escolha do áudio, a plataforma e o padrão do servidor chegam
+ * prontos do launcher. É o único dono da Sessao: com ela o jogo está no modo logado; sem ela, no modo
+ * convidado.
  */
 public class MissaoMarteGame extends Game {
 
@@ -33,33 +37,41 @@ public class MissaoMarteGame extends Game {
     private final Random random;
     private final Clock clock;
     private final boolean comSom;
-    private final Supplier<String> enderecoDoServidor;
+    private final Plataforma plataforma;
+    private final String servidorPadrao;
 
     private OrthographicCamera camera;
-    private FitViewport viewport;
+    private Viewport viewport;
     private SpriteBatch batch;
     private ShapeRenderer formas;
     private BitmapFont fonte;
     private Recursos recursos;
     private TocadorDeSom tocador;
+    private ArmazemDeTexto armazem;
+    private EnderecoDoServidor endereco;
     private ServidorDoJogo servidor;
     private Sessao sessao;
 
+    /** servidorPadrao: o -Dmissaomarte.servidor do desktop ou o -PservidorPadrao do APK; null vale o local. */
     public MissaoMarteGame(MissaoFactory fabrica, RankingService ranking, Random random, Clock clock, boolean comSom,
-                           Supplier<String> enderecoDoServidor) {
+                           Plataforma plataforma, String servidorPadrao) {
         this.fabrica = fabrica;
         this.ranking = ranking;
         this.random = random;
         this.clock = clock;
         this.comSom = comSom;
-        this.enderecoDoServidor = enderecoDoServidor;
+        this.plataforma = plataforma;
+        this.servidorPadrao = servidorPadrao;
     }
 
     @Override
     public void create() {
-        Gdx.app.log(TAG, "create()" + (comSom ? "" : " sem áudio"));
+        Gdx.app.log(TAG, "create()" + (comSom ? "" : " sem áudio") + (plataforma.modoToque() ? " modo toque" : ""));
         camera = new OrthographicCamera();
-        viewport = new FitViewport(LARGURA, ALTURA, camera);
+        // sem toque, igual à fase 5; com toque, o mundo estica para a direita e os controles ficam na sobra
+        viewport = plataforma.modoToque()
+                ? new ExtendViewport(LayoutDosControles.LARGURA_MINIMA, LayoutDosControles.ALTURA_MINIMA, camera)
+                : new FitViewport(LARGURA, ALTURA, camera);
         batch = new SpriteBatch();
         formas = new ShapeRenderer();
         // a fonte padrão do libGDX já tem os acentos do português
@@ -67,8 +79,13 @@ public class MissaoMarteGame extends Game {
         recursos = new Recursos(comSom);
         recursos.carregar();
         tocador = new TocadorDeSom(recursos, comSom);
-        // Gdx.net e Gdx.app só existem depois que a aplicação abriu, por isso o adaptador nasce aqui
-        servidor = new ServidorHttp(Gdx.net, Gdx.app::postRunnable, enderecoDoServidor);
+        // Gdx.net, Gdx.app e as Preferences só existem depois que a aplicação abriu: tudo isso nasce aqui
+        armazem = new PreferenciasDoJogo(Gdx.app.getPreferences(PreferenciasDoJogo.NOME));
+        endereco = new EnderecoDoServidor(armazem, servidorPadrao);
+        if (endereco.avisoDoPadrao() != null) {
+            Gdx.app.log(TAG, endereco.avisoDoPadrao());
+        }
+        servidor = new ServidorHttp(Gdx.net, Gdx.app::postRunnable, endereco);
         trocarTela(new MenuTela(this));
     }
 
@@ -127,6 +144,19 @@ public class MissaoMarteGame extends Game {
         return servidor;
     }
 
+    public EnderecoDoServidor endereco() {
+        return endereco;
+    }
+
+    /** O armazenamento de configuração (Preferences); nunca guarda senha nem token. */
+    public ArmazemDeTexto armazem() {
+        return armazem;
+    }
+
+    public Plataforma plataforma() {
+        return plataforma;
+    }
+
     public MissaoFactory fabrica() {
         return fabrica;
     }
@@ -147,7 +177,7 @@ public class MissaoMarteGame extends Game {
         return camera;
     }
 
-    public FitViewport viewport() {
+    public Viewport viewport() {
         return viewport;
     }
 

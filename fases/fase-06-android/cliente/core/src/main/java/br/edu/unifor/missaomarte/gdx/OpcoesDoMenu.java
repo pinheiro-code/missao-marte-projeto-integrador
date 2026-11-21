@@ -1,5 +1,6 @@
 package br.edu.unifor.missaomarte.gdx;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +16,17 @@ public final class OpcoesDoMenu {
     private OpcoesDoMenu() {
     }
 
+    /** A opção da fase 6, igual nos dois modos; fica fora do para() para os textos da fase 5 não mudarem. */
+    public static final String SERVIDOR = "6  Servidor";
+
     public static List<String> para(boolean logado) {
         return logado ? LOGADO : CONVIDADO;
+    }
+
+    /** As cinco opções da fase 5 e a do servidor. */
+    public static List<String> todas(boolean logado) {
+        List<String> todas = new ArrayList<>(para(logado));
+        todas.add(SERVIDOR);
+        return Collections.unmodifiableList(todas);
     }
 }

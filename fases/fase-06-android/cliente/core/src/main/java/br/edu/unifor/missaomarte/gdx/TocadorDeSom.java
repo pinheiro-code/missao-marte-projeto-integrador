@@ -16,6 +16,8 @@ public class TocadorDeSom {
     private boolean mudo;
     /** Pausada pelo fim da partida: desmutar não a religa até voltar ao menu. */
     private boolean musicaPausada;
+    /** A música tocava quando o app foi para segundo plano. */
+    private boolean tocavaAntesDaPausa;
 
     public TocadorDeSom(Recursos recursos, boolean ativo) {
         this.recursos = recursos;
@@ -48,6 +50,22 @@ public class TocadorDeSom {
         if (ativo) {
             recursos.musica().pause();
         }
+    }
+
+    /** O app foi para segundo plano (pause do libGDX): pausa a música e lembra se ela tocava. */
+    public void pausarPorSegundoPlano() {
+        tocavaAntesDaPausa = ativo && recursos.musica().isPlaying();
+        if (tocavaAntesDaPausa) {
+            recursos.musica().pause();
+        }
+    }
+
+    /** Voltou: retoma só se tocava antes e se ninguém desligou o som nem pausou a música no meio-tempo. */
+    public void retomarDoSegundoPlano() {
+        if (tocavaAntesDaPausa && !mudo && !musicaPausada) {
+            recursos.musica().play();
+        }
+        tocavaAntesDaPausa = false;
     }
 
     public void alternarMudo() {

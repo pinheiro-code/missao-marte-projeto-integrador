@@ -23,6 +23,8 @@ import java.util.List;
  * A partida: traduz tecla em Acao, chama a GameSession e reage aos eventos do turno com som e efeito.
  * Não decide regra nenhuma (nem a colisão): o mundo é do MundoRenderer, o painel é do Hud.
  * No fim, o convidado grava a vitória no ranking local; o logado envia vitória e derrota ao servidor.
+ * No modo toque, os botões da coluna da direita viram a mesma Acao das teclas (ControleDeToque) e as
+ * setas repetem enquanto o mesmo dedo fica apoiado (RepeticaoDoToque).
  */
 public class PartidaTela extends TelaBase {
 
@@ -33,6 +35,8 @@ public class PartidaTela extends TelaBase {
     private final Geometria geometria;
     private final TecladoParaAcao teclado = new TecladoParaAcao();
     private final RepeticaoDeTecla repeticao = new RepeticaoDeTecla();
+    private final ControleDeToque controle = new ControleDeToque();
+    private final RepeticaoDoToque repeticaoDoToque = new RepeticaoDoToque();
     private final PosicoesVisuais posicoes = new PosicoesVisuais();
     private final Tremor tremor = new Tremor();
     private final List<EfeitoTemporario> efeitos = new ArrayList<>();
@@ -50,6 +54,8 @@ public class PartidaTela extends TelaBase {
     private boolean saiu;
     private List<String> resumo;
     private EnvioDaPartida envio;
+    /** Se o botão Reenviar está na tela agora (o envio falhou). */
+    private boolean comReenviar;
 
     /** A tela guarda a Missao que a fábrica criou só para desenhar o mapa; quem muda o estado é a sessão. */
     public PartidaTela(MissaoMarteGame jogo, GameSession sessao, Missao missao) {
@@ -74,18 +80,78 @@ public class PartidaTela extends TelaBase {
         if (acao == Acao.INVALIDA) {
             return false;
         }
+        if (executar(acao)) {
+            repeticao.pressionar(tecla);
+        }
+        return true;
+    }
+
+    /**
+     * O mesmo caminho para a tecla e para o toque: SAIR aborta e volta ao menu; o resto joga um turno.
+     * Devolve verdadeiro quando a ação é um movimento que pode repetir.
+     */
+    private boolean executar(Acao acao) {
         if (acao == Acao.SAIR) {
             sessao.jogar(Acao.SAIR);
             Gdx.app.log(TAG, "missão abortada");
             saiu = true;
             jogo.trocarTela(new MenuTela(jogo));
-            return true;
+            return false;
         }
         jogarTurno(acao);
-        if (movimento(acao) && !sessao.acabou()) {
-            repeticao.pressionar(tecla);
+        return movimento(acao) && !sessao.acabou();
+    }
+
+    /** Voltar do Android: durante a partida, a mesma tecla que aborta; no fim, o mesmo que Continuar. */
+    @Override
+    protected void voltar() {
+        if (sessao.acabou()) {
+            teclaNoFim(Keys.ENTER);
+        } else {
+            teclaApertada(Keys.BACK);
         }
-        return true;
+    }
+
+    @Override
+    protected List<BotaoVirtual> montarBotoes(float largura, float altura) {
+        LayoutDosControles layout = new LayoutDosControles(largura, altura);
+        return sessao.acabou() ? layout.botoesDoFim(comReenviar) : layout.botoesDaPartida();
+    }
+
+    @Override
+    protected void aoTocar(String id, int ponteiro) {
+        if (saiu) {
+            return;
+        }
+        if (sessao.acabou()) {
+            teclaNoFim(id.equals(LayoutDosControles.REENVIAR) ? Keys.R : Keys.ENTER);
+            return;
+        }
+        if (id.equals(LayoutDosControles.SOM)) {
+            jogo.tocador().alternarMudo();
+            return;
+        }
+        Acao acao = controle.acao(id);
+        if (acao != Acao.INVALIDA && executar(acao) && controle.repete(id)) {
+            repeticaoDoToque.pressionar(ponteiro, id, acao);
+        }
+    }
+
+    @Override
+    protected void aoSoltar(int ponteiro) {
+        repeticaoDoToque.soltar(ponteiro);
+    }
+
+    /** O dedo dono saiu do botão arrastando: a repetição para, como se tivesse soltado. */
+    @Override
+    protected void aoArrastar(int ponteiro, float x, float y) {
+        if (ponteiro != repeticaoDoToque.dono()) {
+            return;
+        }
+        BotaoVirtual seta = botao(repeticaoDoToque.botao());
+        if (seta == null || !seta.contem(x, y)) {
+            repeticaoDoToque.parar();
+        }
     }
 
     @Override
@@ -112,6 +178,7 @@ public class PartidaTela extends TelaBase {
                 + ", entregues " + sessao.entregues() + "/" + sessao.total());
         if (sessao.acabou()) {
             repeticao.parar();
+            repeticaoDoToque.parar();
             if (jogo.logado()) {
                 enviarResultado();
             } else if (sessao.venceu()) {
@@ -217,6 +284,15 @@ public class PartidaTela extends TelaBase {
     public void hide() {
         super.hide();
         repeticao.parar();
+        repeticaoDoToque.parar();
+    }
+
+    /** Em segundo plano ninguém está apertando nada: as repetições param. */
+    @Override
+    public void pause() {
+        super.pause();
+        repeticao.parar();
+        repeticaoDoToque.parar();
     }
 
     @Override
@@ -255,6 +331,13 @@ public class PartidaTela extends TelaBase {
                 jogarTurno(teclado.converter(tecla));
             }
         }
+        if (!sessao.acabou() && !saiu) {
+            Acao tocada = repeticaoDoToque.atualizar(delta);
+            if (tocada != null) {
+                jogarTurno(tocada);
+            }
+        }
+        atualizarBotoesDoFim();
         posicoes.atualizar(missao.elementos(), delta);
         tremor.atualizar(delta);
         EfeitoTemporario.atualizarTodos(efeitos, delta);
@@ -266,6 +349,18 @@ public class PartidaTela extends TelaBase {
         if (piscando != null) {
             piscando.atualizar(delta);
             piscando = piscando.terminou() ? null : piscando;
+        }
+    }
+
+    /** Os botões mudam quando a partida acaba e quando o envio falha ou volta a enviar. */
+    private void atualizarBotoesDoFim() {
+        if (!modoToque() || !sessao.acabou()) {
+            return;
+        }
+        boolean falhou = envio != null && envio.estado() == EnvioDaPartida.Estado.FALHOU;
+        if (botao(LayoutDosControles.CONTINUAR) == null || falhou != comReenviar) {
+            comReenviar = falhou;
+            atualizarBotoes();
         }
     }
 
@@ -308,12 +403,14 @@ public class PartidaTela extends TelaBase {
             desenharEnvio();
         }
         String destino = sessao.venceu() ? "ver o ranking" : "voltar ao menu";
+        String continuar = modoToque() ? "Continuar: " : "Enter: ";
         if (envio != null && !envio.podeContinuar()) {
             texto("Aguarde o envio...", 130, 235, Color.LIGHT_GRAY);
         } else if (envio != null && envio.estado() == EnvioDaPartida.Estado.FALHOU) {
-            texto("R: tentar de novo     Enter: " + destino, 130, 235, Color.WHITE);
+            texto((modoToque() ? "Reenviar: tentar de novo     " : "R: tentar de novo     ") + continuar + destino,
+                    130, 235, Color.WHITE);
         } else {
-            texto("Enter: " + destino, 130, 235, Color.WHITE);
+            texto(continuar + destino, 130, 235, Color.WHITE);
         }
         batch().end();
     }
