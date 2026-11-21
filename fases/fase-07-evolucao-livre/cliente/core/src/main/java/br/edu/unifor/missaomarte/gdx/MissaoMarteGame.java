@@ -2,6 +2,7 @@ package br.edu.unifor.missaomarte.gdx;
 
 import br.edu.unifor.missaomarte.application.MissaoFactory;
 import br.edu.unifor.missaomarte.application.RankingService;
+import br.edu.unifor.missaomarte.application.preferencias.PreferenciaDaNave;
 import br.edu.unifor.missaomarte.application.servidor.ArmazemDeTexto;
 import br.edu.unifor.missaomarte.application.servidor.EnderecoDoServidor;
 import br.edu.unifor.missaomarte.application.servidor.ServidorDoJogo;
@@ -49,6 +50,7 @@ public class MissaoMarteGame extends Game {
     private TocadorDeSom tocador;
     private ArmazemDeTexto armazem;
     private EnderecoDoServidor endereco;
+    private PreferenciaDaNave preferenciaDaNave;
     private ServidorDoJogo servidor;
     private Sessao sessao;
 
@@ -82,6 +84,7 @@ public class MissaoMarteGame extends Game {
         // Gdx.net, Gdx.app e as Preferences só existem depois que a aplicação abriu: tudo isso nasce aqui
         armazem = new PreferenciasDoJogo(Gdx.app.getPreferences(PreferenciasDoJogo.NOME));
         endereco = new EnderecoDoServidor(armazem, servidorPadrao);
+        preferenciaDaNave = new PreferenciaDaNave(armazem);
         if (endereco.avisoDoPadrao() != null) {
             Gdx.app.log(TAG, endereco.avisoDoPadrao());
         }
@@ -151,6 +154,11 @@ public class MissaoMarteGame extends Game {
     /** O armazenamento de configuração (Preferences); nunca guarda senha nem token. */
     public ArmazemDeTexto armazem() {
         return armazem;
+    }
+
+    /** A cor da nave escolhida na Nova partida, guardada no mesmo armazém. */
+    public PreferenciaDaNave preferenciaDaNave() {
+        return preferenciaDaNave;
     }
 
     public Plataforma plataforma() {

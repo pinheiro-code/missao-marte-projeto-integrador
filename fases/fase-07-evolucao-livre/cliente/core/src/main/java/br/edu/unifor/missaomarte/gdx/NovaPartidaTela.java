@@ -1,6 +1,7 @@
 package br.edu.unifor.missaomarte.gdx;
 
 import br.edu.unifor.missaomarte.application.GameSession;
+import br.edu.unifor.missaomarte.application.preferencias.CorDaNave;
 import br.edu.unifor.missaomarte.domain.Dificuldade;
 import br.edu.unifor.missaomarte.domain.Missao;
 import com.badlogic.gdx.Input.Keys;
@@ -8,9 +9,11 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.List;
 
 /**
- * Nome do piloto e dificuldade. Enter decola, Esc volta ao menu. No modo convidado o M é letra, não atalho;
- * no modo logado o nome é o da conta e só a dificuldade se escolhe. A regra do nome mora no NomeDoPiloto.
+ * Nome do piloto, dificuldade e cor da nave. Enter decola, Esc volta ao menu, Tab troca a cor.
+ * No modo convidado o M é letra, não atalho; no modo logado o nome é o da conta, e a dificuldade e a cor se
+ * escolhem. A regra do nome mora no NomeDoPiloto.
  * No modo toque: o campo do nome abre a caixa nativa (no celular) e os botões fazem o papel das teclas.
+ * A cor fica guardada a cada troca (PreferenciaDaNave): a próxima Nova partida já começa nela.
  */
 public class NovaPartidaTela extends TelaBase {
 
@@ -20,9 +23,11 @@ public class NovaPartidaTela extends TelaBase {
 
     private final NomeDoPiloto nome = new NomeDoPiloto();
     private Dificuldade dificuldade = Dificuldade.MEDIO;
+    private CorDaNave cor;
 
     public NovaPartidaTela(MissaoMarteGame jogo) {
         super(jogo);
+        this.cor = jogo.preferenciaDaNave().atual();
     }
 
     @Override
@@ -37,6 +42,7 @@ public class NovaPartidaTela extends TelaBase {
         texto("NOVA MISSÃO", 340, 500, Color.ORANGE);
         if (modoToque()) {
             texto("Dificuldade: " + dificuldade, 340, 475, Color.WHITE);
+            MundoRenderer.desenharNaveColorida(batch(), recursos(), cor, 600, 455, 40, 0);
             batch().end();
             return;
         }
@@ -48,6 +54,9 @@ public class NovaPartidaTela extends TelaBase {
         }
         texto("Dificuldade:", 200, 370, Color.LIGHT_GRAY);
         texto("< " + dificuldade + " >", 340, 370, Color.WHITE);
+        texto("Cor da nave:", 200, 320, Color.LIGHT_GRAY);
+        texto(cor.nome() + "   (Tab troca)", 340, 320, Color.WHITE);
+        MundoRenderer.desenharNaveColorida(batch(), recursos(), cor, 560, 290, 48, 0);
         texto(jogo.logado() ? "Setas mudam a dificuldade."
                 : "Digite o nome (Backspace apaga). Setas mudam a dificuldade.", 200, 280, Color.LIGHT_GRAY);
         texto("Enter decola     Esc volta ao menu", 200, 250, Color.LIGHT_GRAY);
@@ -59,12 +68,16 @@ public class NovaPartidaTela extends TelaBase {
         return new LayoutDeOpcoes(40, 20, 720, 430)
                 .linha("nome", "Nome")
                 .linha("menos", "< Dificuldade", "mais", "Dificuldade >")
+                .linha("cor", "Cor")
                 .linha("decolar", "Decolar", "voltar", "Voltar")
                 .montar();
     }
 
     @Override
     protected String rotulo(BotaoVirtual botao) {
+        if (botao.id().equals("cor")) {
+            return "Cor da nave: " + cor.nome();
+        }
         if (!botao.id().equals("nome")) {
             return botao.rotulo();
         }
@@ -80,6 +93,7 @@ public class NovaPartidaTela extends TelaBase {
             case "nome" -> pedirNome();
             case "menos" -> mudarDificuldade(-1);
             case "mais" -> mudarDificuldade(1);
+            case "cor" -> trocarCor();
             case "decolar" -> decolar();
             default -> jogo.trocarTela(new MenuTela(jogo));
         }
@@ -104,6 +118,7 @@ public class NovaPartidaTela extends TelaBase {
             case Keys.BACKSPACE -> nome.apagar();
             case Keys.LEFT, Keys.UP -> mudarDificuldade(-1);
             case Keys.RIGHT, Keys.DOWN -> mudarDificuldade(1);
+            case Keys.TAB -> trocarCor();
             case Keys.ENTER, Keys.NUMPAD_ENTER -> decolar();
             case Keys.ESCAPE -> jogo.trocarTela(new MenuTela(jogo));
             default -> {
@@ -122,6 +137,13 @@ public class NovaPartidaTela extends TelaBase {
     private void mudarDificuldade(int passo) {
         Dificuldade[] todas = Dificuldade.values();
         dificuldade = todas[(dificuldade.ordinal() + passo + todas.length) % todas.length];
+        jogo.tocador().tocar(Som.SELECIONAR);
+    }
+
+    /** Grava na hora: fechar o jogo sem decolar já guarda a escolha. */
+    private void trocarCor() {
+        cor = cor.proxima();
+        jogo.preferenciaDaNave().salvar(cor);
         jogo.tocador().tocar(Som.SELECIONAR);
     }
 

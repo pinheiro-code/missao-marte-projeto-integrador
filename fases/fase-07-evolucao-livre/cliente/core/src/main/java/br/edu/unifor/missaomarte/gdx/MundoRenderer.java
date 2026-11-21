@@ -1,5 +1,6 @@
 package br.edu.unifor.missaomarte.gdx;
 
+import br.edu.unifor.missaomarte.application.preferencias.CorDaNave;
 import br.edu.unifor.missaomarte.domain.Acao;
 import br.edu.unifor.missaomarte.domain.ElementoMapa;
 import br.edu.unifor.missaomarte.domain.Missao;
@@ -11,6 +12,7 @@ import java.util.List;
  * Desenha o mapa com sprites: terreno, depois base, perigos e passageiros, e a nave por último.
  * A imagem sai do símbolo de cada elemento (Imagem.doSimbolo), nunca de instanceof.
  * A posição vem das PosicoesVisuais, para o desenho deslizar entre as células.
+ * A cor escolhida pelo jogador tinge só o sprite da nave (o propulsor e o resto ficam como estão).
  */
 public class MundoRenderer {
 
@@ -18,10 +20,12 @@ public class MundoRenderer {
 
     private final Recursos recursos;
     private final Geometria geometria;
+    private final CorDaNave cor;
 
-    public MundoRenderer(Recursos recursos, Geometria geometria) {
+    public MundoRenderer(Recursos recursos, Geometria geometria, CorDaNave cor) {
         this.recursos = recursos;
         this.geometria = geometria;
+        this.cor = cor;
     }
 
     /** Chamar com o batch aberto. */
@@ -61,7 +65,19 @@ public class MundoRenderer {
     private void desenharNave(SpriteBatch batch, float x, float y, float tempo, Acao direcao) {
         float graus = rotacao(direcao);
         batch.draw(recursos.quadroEmLaco(Imagem.PROPULSOR, tempo), x, y, C / 2, C / 2, C, C, 1, 1, graus);
-        batch.draw(recursos.quadro(Imagem.NAVE, 0), x, y, C / 2, C / 2, C, C, 1, 1, graus);
+        desenharNaveColorida(batch, recursos, cor, x, y, C, graus);
+    }
+
+    /**
+     * O sprite da nave multiplicado pela cor (a original é branca: sem mudança) e a cor anterior do batch de volta,
+     * para nada desenhado depois ficar tingido. Também desenha a amostra da Nova partida.
+     */
+    static void desenharNaveColorida(SpriteBatch batch, Recursos recursos, CorDaNave cor, float x, float y,
+                                     float tamanho, float graus) {
+        float anterior = batch.getPackedColor();
+        batch.setColor(cor.vermelho(), cor.verde(), cor.azul(), 1f);
+        batch.draw(recursos.quadro(Imagem.NAVE, 0), x, y, tamanho / 2, tamanho / 2, tamanho, tamanho, 1, 1, graus);
+        batch.setPackedColor(anterior);
     }
 
     /** O sprite aponta para cima; o libGDX gira no sentido anti-horário. */

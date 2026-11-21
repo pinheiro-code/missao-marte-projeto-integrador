@@ -63,7 +63,8 @@ public class PartidaTela extends TelaBase {
         this.sessao = sessao;
         this.missao = missao;
         this.geometria = new Geometria(missao.tamanho());
-        this.mundo = new MundoRenderer(jogo.recursos(), geometria);
+        // a cor é lida uma vez, no começo da partida: só a Nova partida a troca
+        this.mundo = new MundoRenderer(jogo.recursos(), geometria, jogo.preferenciaDaNave().atual());
         this.hud = new Hud(jogo.recursos(), jogo.fonte(), sessao);
     }
 
