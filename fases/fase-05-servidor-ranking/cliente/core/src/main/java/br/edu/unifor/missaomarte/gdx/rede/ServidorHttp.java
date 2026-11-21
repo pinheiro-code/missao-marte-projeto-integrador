@@ -110,6 +110,10 @@ public class ServidorHttp implements ServidorDoJogo {
     }
 
     private <T> Resposta<T> converter(int status, String corpo, Function<String, T> conversor) {
+        if (status < 100) {
+            // o Net do desktop entrega status -1, e não failed, quando o servidor está desligado
+            return Resposta.erro(JsonDoServidor.SEM_CONEXAO);
+        }
         if (status >= 200 && status < 300) {
             try {
                 return Resposta.ok(conversor.apply(corpo));

@@ -186,6 +186,17 @@ class ServidorHttpTest {
     }
 
     @Test
+    void statusMenosUmDoDesktopViraFalhaDeConexao() {
+        // medido na janela: com o servidor parado, o Net do LWJGL3 respondeu status -1 em vez de failed
+        net.responder(-1, "");
+
+        servidor.enviarPartida(SESSAO, new PartidaConcluida(Dificuldade.MEDIO, false, 10, 5, 3), recebidas::add);
+
+        assertEquals("Não foi possível conectar ao servidor.", recebidas.get(0).erro());
+        assertFalse(recebidas.get(0).naoAutorizado());
+    }
+
+    @Test
     void cancelamentoTambemVoltaPeloExecutor() {
         net.cancelar();
 
