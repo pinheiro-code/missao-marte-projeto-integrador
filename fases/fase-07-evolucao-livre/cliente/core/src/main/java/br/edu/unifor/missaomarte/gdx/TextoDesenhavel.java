@@ -22,9 +22,10 @@ final class TextoDesenhavel {
                 acabouDeTirar = true;
                 continue;
             }
-            // o espaço que separava o caractere tirado não pode virar espaço duplo nem espaço no começo
+            // o espaço que separava o caractere tirado não pode virar espaço duplo nem espaço no começo da linha
             boolean espacoSobrando = c == ' ' && acabouDeTirar
-                    && (saida.length() == 0 || saida.charAt(saida.length() - 1) == ' ');
+                    && (saida.length() == 0 || saida.charAt(saida.length() - 1) == ' '
+                        || saida.charAt(saida.length() - 1) == '\n');
             if (!espacoSobrando) {
                 saida.appendCodePoint(c);
             }

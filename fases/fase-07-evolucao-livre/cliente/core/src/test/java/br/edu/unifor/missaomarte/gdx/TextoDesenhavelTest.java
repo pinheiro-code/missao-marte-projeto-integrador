@@ -37,13 +37,17 @@ class TextoDesenhavelTest {
     @Test
     void tudoQueSobraTemGlifoNaFonte() {
         TextoDesenhavel.de(ALERTA, fonte).chars()
-                .filter(c -> c != ' ')
                 .forEach(c -> assertNotNull(fonte.getGlyph((char) c), "sem glifo: " + (char) c));
     }
 
     @Test
     void caractereNoMeioNaoDeixaEspacoDuplo() {
         assertEquals("a b", TextoDesenhavel.de("a ✨ b", fonte));
+    }
+
+    @Test
+    void caractereNoComecoDaLinhaNaoDeixaEspaco() {
+        assertEquals("a\nb", TextoDesenhavel.de("a\n✨ b", fonte));
     }
 
     @Test
