@@ -1,0 +1,55 @@
+> Task :core:compileJava UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :lwjgl3:compileJava UP-TO-DATE
+> Task :lwjgl3:processResources UP-TO-DATE
+> Task :lwjgl3:classes UP-TO-DATE
+
+> Task :lwjgl3:run
+[MissaoMarte] create() sem áudio
+[Recursos] 17 imagens e 0 sons carregados
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.resize(800, 600)
+[Tela] Som: desativado
+[Tela] MenuTela.hide()
+[Tela] NovaPartidaTela.show()
+[Tela] NovaPartidaTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[Tela] NovaPartidaTela.hide()
+[Tela] PartidaTela.show()
+[Tela] PartidaTela.resize(800, 600)
+[Tela] NovaPartidaTela.dispose()
+[Partida] ESQUERDA -> [MOVIMENTO] pontos 29, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> [MOVIMENTO] pontos 28, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> [MOVIMENTO] pontos 27, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> [MOVIMENTO] pontos 26, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> [MOVIMENTO] pontos 25, vidas 3, a bordo 0, entregues 0/4
+[Partida] CIMA -> [MOVIMENTO] pontos 24, vidas 3, a bordo 0, entregues 0/4
+[Partida] EMBARCAR -> [EMBARQUE] pontos 34, vidas 3, a bordo 1, entregues 0/4
+[Partida] BAIXO -> [MOVIMENTO] pontos 33, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> [MOVIMENTO] pontos 32, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> [MOVIMENTO] pontos 31, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> [MOVIMENTO] pontos 30, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> [MOVIMENTO] pontos 29, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> [MOVIMENTO, ENTREGA] pontos 28, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> [MOVIMENTO] pontos 27, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> [MOVIMENTO] pontos 26, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> [MOVIMENTO] pontos 25, vidas 3, a bordo 0, entregues 1/4
+[Partida] DIREITA -> [MOVIMENTO] pontos 24, vidas 3, a bordo 0, entregues 1/4
+[Partida] DIREITA -> [MOVIMENTO] pontos 23, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> [MOVIMENTO] pontos 22, vidas 3, a bordo 0, entregues 1/4
+[Partida] EMBARCAR -> [EMBARQUE] pontos 32, vidas 3, a bordo 1, entregues 1/4
+[Partida] missão abortada
+[Tela] PartidaTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] PartidaTela.dispose()
+[Tela] MenuTela.pause()
+[MissaoMarte] dispose()
+[Tela] MenuTela.hide()
+[Tela] MenuTela.dispose()
+
+BUILD SUCCESSFUL in 14s
+5 actionable tasks: 1 executed, 4 up-to-date
