@@ -142,7 +142,8 @@ public final class ConfiguracaoDoServidor {
             return true;
         }
         String[] partes = endereco.split("\\.");
-        if (partes.length != 4 || !soDigitos(partes[0]) || !soDigitos(partes[1]) || !soDigitos(partes[3])) {
+        if (partes.length != 4 || !soDigitos(partes[0]) || !soDigitos(partes[1]) || !soDigitos(partes[2])
+                || !soDigitos(partes[3])) {
             return false;
         }
         int a = Integer.parseInt(partes[0]);

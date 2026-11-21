@@ -84,6 +84,15 @@ public abstract class TelaBase implements Screen {
             return false;
         }
 
+        // gesto de borda ou modo imersivo cancelam o toque sem touchUp; sem isto a seta seguiria repetindo
+        @Override
+        public boolean touchCancelled(int telaX, int telaY, int ponteiro, int botaoDoMouse) {
+            if (modoToque()) {
+                aoSoltar(ponteiro);
+            }
+            return false;
+        }
+
         @Override
         public boolean touchDragged(int telaX, int telaY, int ponteiro) {
             if (modoToque()) {

@@ -29,6 +29,8 @@ import java.util.List;
 public class PartidaTela extends TelaBase {
 
     private static final String TAG = "Partida";
+    /** Toques ignorados logo depois do fim: o dedo que ainda batia na seta não pula a tela de fim. */
+    static final float ESPERA_NO_FIM = 0.5f;
 
     private final GameSession sessao;
     private final Missao missao;
@@ -56,6 +58,7 @@ public class PartidaTela extends TelaBase {
     private EnvioDaPartida envio;
     /** Se o botão Reenviar está na tela agora (o envio falhou). */
     private boolean comReenviar;
+    private float tempoNoFim;
 
     /** A tela guarda a Missao que a fábrica criou só para desenhar o mapa; quem muda o estado é a sessão. */
     public PartidaTela(MissaoMarteGame jogo, GameSession sessao, Missao missao) {
@@ -125,7 +128,10 @@ public class PartidaTela extends TelaBase {
             return;
         }
         if (sessao.acabou()) {
-            teclaNoFim(id.equals(LayoutDosControles.REENVIAR) ? Keys.R : Keys.ENTER);
+            // até o próximo quadro os botões ainda são os da partida, e o Continuar ocupa a linha das setas
+            if (tempoNoFim >= ESPERA_NO_FIM && botao(LayoutDosControles.CONTINUAR) != null) {
+                teclaNoFim(id.equals(LayoutDosControles.REENVIAR) ? Keys.R : Keys.ENTER);
+            }
             return;
         }
         if (id.equals(LayoutDosControles.SOM)) {
@@ -337,6 +343,9 @@ public class PartidaTela extends TelaBase {
             if (tocada != null) {
                 jogarTurno(tocada);
             }
+        }
+        if (sessao.acabou()) {
+            tempoNoFim += delta;
         }
         atualizarBotoesDoFim();
         posicoes.atualizar(missao.elementos(), delta);
