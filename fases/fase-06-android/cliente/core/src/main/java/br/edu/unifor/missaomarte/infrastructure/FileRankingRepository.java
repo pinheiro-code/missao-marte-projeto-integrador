@@ -30,7 +30,8 @@ public class FileRankingRepository implements RankingRepository {
             return new ArrayList<>();
         }
         try {
-            return interpretar(Files.readString(arquivo, StandardCharsets.UTF_8).trim());
+            // Files.readString e writeString são do Java 11 e não existem no Android 8 (API 26)
+            return interpretar(new String(Files.readAllBytes(arquivo), StandardCharsets.UTF_8).trim());
         } catch (IOException e) {
             return new ArrayList<>();
         }
@@ -48,7 +49,7 @@ public class FileRankingRepository implements RankingRepository {
                     + ",\"tempoJogo\":" + e.tempoJogo() + "}");
         }
         try {
-            Files.writeString(arquivo, "[" + String.join(",", objetos) + "]", StandardCharsets.UTF_8);
+            Files.write(arquivo, ("[" + String.join(",", objetos) + "]").getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

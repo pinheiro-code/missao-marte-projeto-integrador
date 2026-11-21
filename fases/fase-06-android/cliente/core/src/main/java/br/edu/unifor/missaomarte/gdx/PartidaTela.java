@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class PartidaTela extends TelaBase {
     private EfeitoTemporario flash;
     private EfeitoTemporario piscando;
     private float tempo;
-    private List<String> mensagens = List.of("Boa missão! Leve todos os passageiros até a base L.");
+    private List<String> mensagens = Collections.singletonList("Boa missão! Leve todos os passageiros até a base L.");
     private Acao ultimaDirecao = Acao.CIMA;
     private boolean registrado;
     private boolean saiu;
