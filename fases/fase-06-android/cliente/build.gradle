@@ -1,9 +1,20 @@
-// Versão do libGDX num lugar só: core e lwjgl3 leem daqui.
+// Versão do libGDX num lugar só: core, lwjgl3 e android leem daqui.
 ext {
     gdxVersion = '1.12.1'
 }
 
-subprojects {
+// -PservidorPadrao=http://host:porta vira o padrão do servidor no APK (BuildConfig.SERVIDOR_PADRAO).
+// A forma é conferida aqui, na raiz, antes de virar constante de código: falha mesmo sem o SDK.
+// A regex só confere a forma; quem decide se o valor serve é o ConfiguracaoDoServidor.deUrl no jogo.
+def servidorPadrao = findProperty('servidorPadrao') ?: 'http://localhost:8080'
+if (!(servidorPadrao ==~ /^https?:\/\/[A-Za-z0-9.-]+(:[0-9]{1,5})?$/)) {
+    throw new GradleException("Valor inválido em -PservidorPadrao: '${servidorPadrao}'. " +
+            'Use http://endereco:porta ou https://endereco:porta, sem caminho, espaço ou @.')
+}
+ext.servidorPadrao = servidorPadrao
+
+// O plugin java não convive com o do Android: só core e lwjgl3 recebem o plugin e o Java 17 daqui.
+configure([project(':core'), project(':lwjgl3')]) {
     apply plugin: 'java'
 
     java {

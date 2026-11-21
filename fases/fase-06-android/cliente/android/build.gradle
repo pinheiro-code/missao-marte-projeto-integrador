@@ -1,0 +1,98 @@
+// Módulo Android: só entra no build quando o settings.gradle acha o SDK. O plugin fica aqui, e não
+// na raiz, para o build do desktop nunca precisar baixá-lo. AGP 8.6.1 combina com o Gradle 8.7.
+plugins {
+    id 'com.android.application' version '8.6.1'
+}
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+configurations {
+    // os .jar com as bibliotecas nativas (.so) do libGDX, uma por arquitetura
+    nativas
+}
+
+dependencies {
+    implementation project(':core')
+    // o core já expõe o gdx como api; repetir aqui deixa explícito e não faz mal
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+    nativas "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+    nativas "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+    nativas "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+    nativas "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+}
+
+android {
+    namespace 'br.edu.unifor.missaomarte.android'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'br.edu.unifor.missaomarte'
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+        // o valor já foi validado pela regex no build.gradle da raiz
+        buildConfigField 'String', 'SERVIDOR_PADRAO', "\"${rootProject.ext.servidorPadrao}\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        // HTTP sem criptografia só no debug (servidor no PC ou no Wi-Fi); o release só aceita HTTPS
+        debug {
+            manifestPlaceholders = [usaHttpSemCriptografia: 'true']
+        }
+        release {
+            manifestPlaceholders = [usaHttpSemCriptografia: 'false']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+            // os mesmos arquivos do desktop, sem cópia
+            assets.srcDirs = ['../core/assets']
+            // sem isto os .so não entram no APK e o jogo fecha ao abrir
+            jniLibs.srcDirs = ['build/nativas']
+        }
+    }
+
+    lint {
+        // o relatório fica em build/reports/lint-results-debug.html
+        abortOnError false
+    }
+}
+
+// Extrai os .so de cada .jar de nativas para build/nativas/<arquitetura>, antes do empacotamento.
+def copiarNativas = tasks.register('copiarNativas') {
+    inputs.files(configurations.nativas)
+    outputs.dir(layout.buildDirectory.dir('nativas'))
+    doLast {
+        configurations.nativas.files.each { jar ->
+            def abi = ['armeabi-v7a', 'arm64-v8a', 'x86_64', 'x86'].find { jar.name.endsWith("natives-${it}.jar") }
+            if (abi != null) {
+                copy {
+                    from zipTree(jar)
+                    into layout.buildDirectory.dir("nativas/$abi")
+                    include '*.so'
+                }
+            }
+        }
+    }
+}
+
+tasks.matching { it.name.startsWith('merge') && it.name.contains('JniLib') }.configureEach {
+    dependsOn copiarNativas
+}

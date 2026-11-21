@@ -2,3 +2,5 @@ build/
 .gradle/
 out/
 ranking.json
+# caminho do Android SDK desta máquina: cada um tem o seu
+local.properties
