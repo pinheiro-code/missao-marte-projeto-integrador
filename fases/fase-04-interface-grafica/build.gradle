@@ -1,0 +1,21 @@
+// Versão do libGDX num lugar só: core e lwjgl3 leem daqui.
+ext {
+    gdxVersion = '1.12.1'
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+}
