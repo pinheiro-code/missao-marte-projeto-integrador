@@ -17,7 +17,7 @@ Cada fase fica numa pasta própria em `fases/`. Uma fase nova nunca altera as an
 | 3 e 4 | a definir | libGDX e interface gráfica | 2 | backlog |
 | 5 | `fases/fase-05-servidor-ranking` | Servidor de ranking (Spring Boot) e cliente libGDX com contas e ranking global | 3 | em revisão |
 | 6 | `fases/fase-06-android` | Módulo Android, controles por toque, servidor configurável no jogo e servidor pronto para publicar | 4 | em revisão |
-| 7 | a definir | Melhoria escolhida pela equipe | 4 | backlog |
+| 7 | `fases/fase-07-evolucao-livre` | Melhoria da equipe: cor da nave escolhida na Nova partida e guardada entre partidas | 4 | em revisão |
 
 ## Requisitos
 
