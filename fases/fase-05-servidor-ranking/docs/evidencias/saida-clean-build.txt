@@ -1,0 +1,37 @@
+Gradle 8.7
+> Task :core:clean
+> Task :lwjgl3:clean
+> Task :core:compileJava
+> Task :core:processResources NO-SOURCE
+> Task :core:classes
+> Task :core:jar
+> Task :core:assemble
+> Task :core:compileTestJava
+> Task :core:processTestResources NO-SOURCE
+> Task :core:testClasses
+
+> Task :core:test
+
+> Task :core:check
+> Task :core:build
+> Task :lwjgl3:compileJava
+> Task :lwjgl3:processResources
+> Task :lwjgl3:classes
+> Task :lwjgl3:jar
+> Task :lwjgl3:startScripts
+> Task :lwjgl3:distTar
+> Task :lwjgl3:distZip
+> Task :lwjgl3:assemble
+> Task :lwjgl3:compileTestJava NO-SOURCE
+> Task :lwjgl3:processTestResources NO-SOURCE
+> Task :lwjgl3:testClasses UP-TO-DATE
+> Task :lwjgl3:test NO-SOURCE
+> Task :lwjgl3:check UP-TO-DATE
+> Task :lwjgl3:build
+
+BUILD SUCCESSFUL in 5s
+12 actionable tasks: 12 executed
+saida=0
+
+$ cat core/build/test-results/test/*.xml | grep -o 'tests=...' | awk (soma do critério 10)
+140 0 0 0

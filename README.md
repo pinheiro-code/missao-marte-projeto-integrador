@@ -15,7 +15,7 @@ Cada fase fica numa pasta própria em `fases/`. Uma fase nova nunca altera as an
 | 1 | `fases/fase-01-refatoracao` | Refatoração em camadas (domain, application, console, infrastructure) | 1 | pronta |
 | 2 | `fases/fase-02-gradle` | Build, testes e execução pelo Gradle Wrapper | 1 | pronta |
 | 3 e 4 | a definir | libGDX e interface gráfica | 2 | backlog |
-| 5 | a definir | Servidor de ranking (Spring Boot) | 3 | backlog |
+| 5 | `fases/fase-05-servidor-ranking` | Servidor de ranking (Spring Boot) e cliente libGDX com contas e ranking global | 3 | em revisão |
 | 6 | a definir | Android | 4 | backlog |
 | 7 | a definir | Melhoria escolhida pela equipe | 4 | backlog |
 

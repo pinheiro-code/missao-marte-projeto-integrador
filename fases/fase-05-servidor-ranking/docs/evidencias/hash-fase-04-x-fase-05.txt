@@ -1,0 +1,45 @@
+# sha256 dos fontes da fase 4 (domain, application, infrastructure), conferidos na fase 5 com sha256sum -c
+c76e2b939452a39c8980b61e854060ea86e19400a33c959f6243574baceca008 *core/src/main/java/br/edu/unifor/missaomarte/domain/Acao.java
+69a332ccffa3898e45e1554aff36a3d2e7273656e625818cd288c20b4dbef2b2 *core/src/main/java/br/edu/unifor/missaomarte/domain/Asteroide.java
+3786af53c7047d040a6d8d4ad57871f47a4dc6e40e104036071750bdc25d8264 *core/src/main/java/br/edu/unifor/missaomarte/domain/Astronauta.java
+a86c7d492c0e721178873b623a203dec7dd4a4439fb4a24c5bc6e9b4d0982619 *core/src/main/java/br/edu/unifor/missaomarte/domain/Base.java
+45748d218c6770af8cf551fbef4563e515d986b0ea05ca80e8b1fdc0742be43d *core/src/main/java/br/edu/unifor/missaomarte/domain/Dificuldade.java
+b48bf8745ebd79f3676f8f742e7ab6ddd76275fb51dc2f08d90ace217e06e86a *core/src/main/java/br/edu/unifor/missaomarte/domain/ElementoMapa.java
+238d601ec23ae5c7ec569a25ae66ef8ac0b58332119fdb1c09f7d8b1be6ad1fd *core/src/main/java/br/edu/unifor/missaomarte/domain/Engenheiro.java
+77a2bc34a903d25816ec453835a8d7b19589efccbb8f55a570de5850205d8962 *core/src/main/java/br/edu/unifor/missaomarte/domain/Inimigo.java
+28265e764cfa7ad016f6d0f97c23117405e9e942249d876bd914fdb26627b053 *core/src/main/java/br/edu/unifor/missaomarte/domain/Missao.java
+7f86bd74ecd12802a2215d7bfbbd35804679e14d2dc99d975928502d9619add5 *core/src/main/java/br/edu/unifor/missaomarte/domain/Nave.java
+b766c293f3730da8cae9817c7aab8688b44dde9683c6b1edc3c9c1e39f06c16f *core/src/main/java/br/edu/unifor/missaomarte/domain/Passageiro.java
+2f9ac17b1097e726d4d96f38cd85cc4a990ebcf558d104c124fbc9304f52fdef *core/src/main/java/br/edu/unifor/missaomarte/domain/Posicao.java
+d5a7fabeb30b23a4275a01e8c64d6e2b83e0d86005d97906a224b8d09ab6cc49 *core/src/main/java/br/edu/unifor/missaomarte/domain/Professor.java
+4e26050cd1add1f95ac0afb3d735842b76ed32706316c300f174dc2485e44f33 *core/src/main/java/br/edu/unifor/missaomarte/application/EventoJogo.java
+2557fa7aaecdfff351e22c78b821e35df5b43959c7363d8802bdb117fbf45108 *core/src/main/java/br/edu/unifor/missaomarte/application/GameSession.java
+fc34f7e9015af523d9c170352939f6a870463e74a8a574b0f0c896a426ae7a30 *core/src/main/java/br/edu/unifor/missaomarte/application/MissaoFactory.java
+530677b3e82f97def727d80e461f03769482ad6e6308afbf462ea79e2e3e68b1 *core/src/main/java/br/edu/unifor/missaomarte/application/RankingEntry.java
+90e794dbbe2fe5ed7bcd51254bcf5a8004a94a8446a0fcc67350a8a0c698dcd3 *core/src/main/java/br/edu/unifor/missaomarte/application/RankingRepository.java
+b93a176fa8b1e931b6b37db8fdd1ad3153381796a064ceebe77b60369a691c34 *core/src/main/java/br/edu/unifor/missaomarte/application/RankingService.java
+8da2ee68adc4303ff06794016a83c357dd8d06cd2c19b450c0bbc5ff114765d1 *core/src/main/java/br/edu/unifor/missaomarte/application/ResultadoTurno.java
+f8d99015889355528e4a49a42944067aded48a047d9538d3476a5ed3269099e1 *core/src/main/java/br/edu/unifor/missaomarte/infrastructure/FileRankingRepository.java
+
+# resultado na fase 5:
+core/src/main/java/br/edu/unifor/missaomarte/domain/Acao.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Asteroide.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Astronauta.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Base.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Dificuldade.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/ElementoMapa.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Engenheiro.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Inimigo.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Missao.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Nave.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Passageiro.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Posicao.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/domain/Professor.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/application/EventoJogo.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/application/GameSession.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/application/MissaoFactory.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/application/RankingEntry.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/application/RankingRepository.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/application/RankingService.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/application/ResultadoTurno.java: OK
+core/src/main/java/br/edu/unifor/missaomarte/infrastructure/FileRankingRepository.java: OK
