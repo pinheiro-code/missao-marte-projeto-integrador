@@ -4,7 +4,8 @@ Roteiro para o jogo no celular alcançar o servidor. São dois caminhos: **(A) W
 servidor rodando no seu PC, e **(B) contêiner na nuvem**. Este é um trabalho acadêmico: o objetivo é
 testar no celular, não manter um serviço no ar. Leia os avisos no fim antes de abrir o servidor.
 
-Nenhuma credencial real aparece aqui: troque cada `<...>` pelo seu valor e guarde-o fora do repositório.
+Nenhuma credencial real aparece aqui: troque cada `<...>` pelo seu valor. O segredo do token é lido de um
+arquivo ou variável fora do repositório e nunca é escrito no comando.
 
 ## Variáveis de ambiente
 
@@ -32,13 +33,16 @@ de café costuma isolar os aparelhos).
 2. Suba o servidor escutando em todas as interfaces. No Git Bash, na pasta `servidor`:
 
    ```bash
-   MISSAOMARTE_ENDERECO=0.0.0.0 MISSAOMARTE_JWT_SEGREDO='<segredo com 32 bytes ou mais>' ./gradlew bootRun --console=plain
+   # o segredo mora num arquivo fora do repositório (ex.: gerado uma vez com openssl rand -base64 48)
+   export MISSAOMARTE_JWT_SEGREDO=$(cat ~/segredo-missaomarte.txt)
+   MISSAOMARTE_ENDERECO=0.0.0.0 ./gradlew bootRun --console=plain
    ```
 
    No PowerShell:
 
    ```powershell
-   $env:MISSAOMARTE_ENDERECO = '0.0.0.0'; $env:MISSAOMARTE_JWT_SEGREDO = '<segredo>'; .\gradlew bootRun --console=plain
+   $env:MISSAOMARTE_JWT_SEGREDO = Get-Content "$HOME\segredo-missaomarte.txt"
+   $env:MISSAOMARTE_ENDERECO = '0.0.0.0'; .\gradlew bootRun --console=plain
    ```
 
    Sem `0.0.0.0` o servidor só escuta em `127.0.0.1` e **nenhum outro aparelho o alcança**, mesmo
@@ -72,7 +76,8 @@ Para conferir a imagem na sua máquina (precisa do Docker):
 
 ```bash
 docker build -t missao-marte-servidor .
-docker run --rm -p 8080:8080 -e MISSAOMARTE_JWT_SEGREDO='<segredo>' -v missaomarte-dados:/dados missao-marte-servidor
+# -e sem valor repassa a variável que já está no terminal; o segredo não aparece no comando
+docker run --rm -p 8080:8080 -e MISSAOMARTE_JWT_SEGREDO -v missaomarte-dados:/dados missao-marte-servidor
 curl http://localhost:8080/api/saude
 ```
 
