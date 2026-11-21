@@ -1,0 +1,28 @@
+// google() é onde mora o plugin do Android; só é baixado quando o módulo android entra no build.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = 'missao-marte'
+include 'core', 'lwjgl3'
+
+// O módulo android só entra com o Android SDK (pasta platforms/android-35). Sem ele, o build inteiro
+// falharia ("SDK location not found"); assim, quem não tem o SDK continua compilando o desktop.
+// O SDK vem do sdk.dir do local.properties (com barras normais: C:/Users/...) ou do ANDROID_HOME.
+def pastaDoSdk = System.getenv('ANDROID_HOME')
+def local = file('local.properties')
+if (local.exists()) {
+    def propriedades = new Properties()
+    local.withInputStream { propriedades.load(it) }
+    pastaDoSdk = propriedades.getProperty('sdk.dir', pastaDoSdk)
+}
+if (pastaDoSdk != null && new File(pastaDoSdk, 'platforms/android-35').isDirectory()) {
+    include 'android'
+} else {
+    println 'Aviso: Android SDK com platforms/android-35 não encontrado (sdk.dir no local.properties ou ANDROID_HOME). ' +
+            'O módulo android fica fora do build; core e lwjgl3 compilam normalmente.'
+}
