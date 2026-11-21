@@ -96,7 +96,7 @@ class ConfiguracaoDoServidorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"172.15.0.1", "172.32.0.1", "8.8.8.8", "192.169.0.1", "jogo.exemplo.com", "meu-pc"})
+    @ValueSource(strings = {"172.15.0.1", "172.32.0.1", "8.8.8.8", "192.169.0.1", "jogo.exemplo.com", "meu-pc", "10.1.abc.1"})
     void foraDaRedeLocalComHttpExigeAviso(String endereco) {
         ConfiguracaoDoServidor c = ConfiguracaoDoServidor.criar(endereco, 8080, false);
 

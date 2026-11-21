@@ -65,15 +65,34 @@ class FormularioDeServidorTest {
     }
 
     @Test
-    void definirTextoAplicaAsMesmasRegras() {
-        formulario.definirTexto(FormularioDeServidor.Campo.ENDERECO, "http://x/a@b");
+    void definirTextoRecusaCaractereForaDaRegraSemMudarOCampo() {
+        formulario.definirTexto(FormularioDeServidor.Campo.ENDERECO, "192.168.0.10");
+        formulario.definirTexto(FormularioDeServidor.Campo.PORTA, "8080");
 
-        assertEquals("httpxab", formulario.endereco());
+        assertEquals("Digite só o endereço, sem http:// ou https://.",
+                formulario.definirTexto(FormularioDeServidor.Campo.ENDERECO, "http://x/a@b"));
+        assertEquals("Endereço inválido: use letras, números, hífen e ponto.",
+                formulario.definirTexto(FormularioDeServidor.Campo.ENDERECO, "meu-servidor.com:8080"));
+        assertEquals("O endereço não pode ter espaço, barra nem @.",
+                formulario.definirTexto(FormularioDeServidor.Campo.ENDERECO, "a b"));
+        assertEquals("192.168.0.10", formulario.endereco());
         assertEquals(FormularioDeServidor.Campo.ENDERECO, formulario.campo());
 
-        formulario.definirTexto(FormularioDeServidor.Campo.PORTA, " 80 80 1234");
-        assertEquals("80801", formulario.porta());
+        assertEquals("A porta só aceita números.",
+                formulario.definirTexto(FormularioDeServidor.Campo.PORTA, " 80 80 1234"));
+        assertEquals("A porta deve ser de 1 a 65535.",
+                formulario.definirTexto(FormularioDeServidor.Campo.PORTA, "123456"));
+        assertEquals("8080", formulario.porta());
         assertEquals(FormularioDeServidor.Campo.PORTA, formulario.campo());
+    }
+
+    @Test
+    void definirTextoTiraOsEspacosDasPontas() {
+        assertNull(formulario.definirTexto(FormularioDeServidor.Campo.ENDERECO, "  Meu-Servidor.local "));
+        assertNull(formulario.definirTexto(FormularioDeServidor.Campo.PORTA, " 8080 "));
+
+        assertEquals("Meu-Servidor.local", formulario.endereco());
+        assertEquals("8080", formulario.porta());
     }
 
     @Test

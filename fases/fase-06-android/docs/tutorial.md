@@ -21,7 +21,7 @@ depende do SDK ou de um aparelho está na seção 8.7.
 | `ranking.json` na pasta onde o jogo abre | no desktop, igual; no Android, na pasta privada do app (`getFilesDir()`) |
 | servidor só em `127.0.0.1:8080` | escuta e porta por variável (`MISSAOMARTE_ENDERECO`, `MISSAOMARTE_PORTA`, `PORT`), `GET /api/saude`, `app.jar`, `Dockerfile` |
 | core com `List.of`, `Files.readString` (Java 9 e 11) | core sem essas APIs (o Android 8, API 26, não as tem) |
-| 49 testes no servidor e 140 no cliente | 52 no servidor e 267 no cliente |
+| 49 testes no servidor e 140 no cliente | 52 no servidor e 269 no cliente |
 
 Antes (fase 5): um jogo desktop e um servidor local.
 
@@ -184,7 +184,15 @@ Boot 4 e foi só documentado.
 - A opção 6 entra por `OpcoesDoMenu.todas()`; `para()` ficou igual, então `OpcoesDoMenuTest` (fase 5) não mudou.
   No desktop sem toque o menu ganhou a linha 6 e o aviso desceu de y=180 para y=165.
 - `EntrarTela` ganhou `F3` (servidor) no teclado e no texto de ajuda.
-- Os botões do fim de partida (Continuar, Reenviar) ficam na coluna de controles.
+- Os botões do fim de partida (Continuar, Reenviar) ficam na coluna de controles. Como o Continuar ocupa a
+  linha das setas, os toques são ignorados por 0,5 s depois do fim (`PartidaTela.ESPERA_NO_FIM`): o dedo que
+  ainda batia na seta não pula a tela de vitória ou de GAME OVER.
+- Toque cancelado pelo sistema (gesto de borda, modo imersivo) chega em `touchCancelled` e solta o dedo, como o
+  `touchUp`; sem isso a seta seguiria repetindo.
+- O texto da caixa nativa no endereço do servidor é **recusado inteiro** quando tem caractere fora de
+  `[A-Za-z0-9.-]` (o campo fica como estava e a tela mostra a mensagem do `ConfiguracaoDoServidor`), em vez de
+  filtrado: filtrar faria de `meu-servidor.com:8080` um `meu-servidor.com8080` aceito sem aviso. Na porta, o
+  mesmo com o que não for dígito.
 - `ConfiguracaoDoServidor.url()` sempre põe a porta (ex.: `https://x:443`).
 - Ícone: `tools/GeradorDeIcone.java` desenha por código a nave do jogo sobre um planeta vermelho e grava os 5
   tamanhos; rodar de novo gera os mesmos bytes (critério 7).
@@ -242,9 +250,9 @@ Problemas reais e como foram resolvidos:
 
 | teste | casos | cobre |
 |---|---|---|
-| `ConfiguracaoDoServidorTest` | 53 | URL montada, normalização, nomes e IPs válidos e inválidos (`256.1.1.1`, `1.2.3`), `http://x/a@b`, porta 0 e 65536, `deUrl`, redes privadas, aviso de HTTP, igualdade |
+| `ConfiguracaoDoServidorTest` | 54 | URL montada, normalização, nomes e IPs válidos e inválidos (`256.1.1.1`, `1.2.3`), `http://x/a@b`, porta 0 e 65536, `deUrl`, redes privadas (`10.1.abc.1` é nome, não rede local), aviso de HTTP, igualdade |
 | `EnderecoDoServidorTest` | 11 | precedência salvo > padrão > localhost, leitura preguiçosa, salvar, restaurar, valor salvo inválido ignorado, nenhuma chave de senha ou token |
-| `FormularioDeServidorTest` | 10 | caracteres aceitos, limites, troca de campo, HTTPS, `definirTexto`, `montar()` com configuração ou mensagem |
+| `FormularioDeServidorTest` | 11 | caracteres aceitos, limites, troca de campo, HTTPS, `definirTexto` (recusa `http://x/a@b`, `meu-servidor.com:8080` e porta com espaço sem mudar o campo; tira os espaços das pontas), `montar()` com configuração ou mensagem |
 | `FormularioDeLoginTextoTest` | 5 | `definirTexto` aplica as regras de digitação a cada caractere; `selecionarCampo` |
 | `NomeDoPilotoTest` | 5 | caracteres aceitos, máximo de 20, apagar, `definirTexto` |
 | `BotaoVirtualTest` | 3 | `contem(x, y)` dentro, fora e nas bordas |
@@ -269,7 +277,7 @@ servidor$ ./gradlew bootJar            → build/libs/app.jar (59.553.988 bytes)
 cliente$  ./gradlew --version          → Gradle 8.7, JVM 17.0.21.1 (Eclipse Adoptium 17.0.21.1+2)
 cliente$  ./gradlew clean build        → Aviso: Android SDK com platforms/android-35 não encontrado (...). O módulo android fica fora do build; core e lwjgl3 compilam normalmente.
                                          BUILD SUCCESSFUL in 5s
-          soma dos XML do core         → 267 0 0 0  (fase 5, rodada na mesma worktree: 140 0 0 0)
+          soma dos XML do core         → 269 0 0 0  (fase 5, rodada na mesma worktree: 140 0 0 0)
 cliente$  ./gradlew help -PservidorPadrao='http://x/a@b'      → sai 1: "Valor inválido em -PservidorPadrao: 'http://x/a@b'. Use http://endereco:porta ou https://endereco:porta, sem caminho, espaço ou @."
 cliente$  ./gradlew help -PservidorPadrao=http://10.0.2.2:8080 → sai 0
 ```
@@ -337,7 +345,7 @@ do debug e do release dependem do SDK: seção 8.7. O que existe é a declaraç�
 
 | o quê | por quê | como verificar |
 |---|---|---|
-| gerar o APK (`:android:assembleDebug`) | sem Android SDK; instalar exige aceitar a licença | instalar o Android Studio ou as command-line tools, aceitar as licenças, `sdkmanager "platforms;android-35" "build-tools;35.0.0"`, criar `cliente/local.properties` com `sdk.dir=C:/Users/<você>/AppData/Local/Android/Sdk` e rodar `./gradlew :android:assembleDebug` |
+| gerar o APK (`:android:assembleDebug`) | sem Android SDK; instalar exige aceitar a licença | instalar o Android Studio ou as command-line tools, aceitar as licenças, `sdkmanager "platforms;android-35" "build-tools;34.0.0"`, criar `cliente/local.properties` com `sdk.dir=C:/Users/<você>/AppData/Local/Android/Sdk` e rodar `./gradlew :android:assembleDebug` |
 | `minSdk`, `targetSdk` e permissões no APK | sem APK | `aapt2 dump badging android/build/outputs/apk/debug/android-debug.apk` (espera `sdkVersion:'26'`, `targetSdkVersion:'35'` e só `android.permission.INTERNET`) |
 | as quatro ABIs e os assets no APK | sem APK | `unzip -l android-debug.apk | grep -E "lib/|assets/"` (espera `libgdx.so` em `armeabi-v7a`, `arm64-v8a`, `x86` e `x86_64`, e os PNG e WAV do jogo) |
 | `usesCleartextTraffic` true no debug e false no release | sem SDK | `aapt2 dump xmltree --file AndroidManifest.xml android-debug.apk`; para o release, `./gradlew :android:processReleaseMainManifest` e ler `android/build/intermediates/merged_manifests/release/.../AndroidManifest.xml` |
@@ -366,13 +374,15 @@ do debug e do release dependem do SDK: seção 8.7. O que existe é a declaraç�
    tamanho físico constante.
 7. **O relógio da partida conta em segundo plano.** Pausar o tempo junto com a música evitaria a partida
    "andar" com o jogo minimizado.
+8. **Ajuda de teclado na partida em modo toque.** O painel da partida ainda mostra "W/A/S/D ou setas", "Q/Esc"
+   e "M" (capturas f6-15 e f6-19). Esconder no modo toque, como nas outras telas, pede refazer cinco capturas.
 
 ## Roteiro mínimo de validação (15 passos do enunciado)
 
 | passo | resultado | evidência |
 |---|---|---|
 | 1. `gradlew --version` em cada subprojeto | servidor: Gradle 9.8.2, JVM 17.0.21.1; cliente: Gradle 8.7, JVM 17.0.21.1 | 8.6 Saídas |
-| 2. `gradlew test` (servidor) e `gradlew clean build` (cliente) | `BUILD SUCCESSFUL`: 52 testes no servidor e 267 no cliente, 0 falhas | 8.6 Saídas |
+| 2. `gradlew test` (servidor) e `gradlew clean build` (cliente) | `BUILD SUCCESSFUL`: 52 testes no servidor e 269 no cliente, 0 falhas | 8.6 Saídas |
 | 3. desktop sem toque em 800x600 como na fase 5 | ok: 800x600, teclado, o menu ganhou a linha 6 | `f6-22`, `f6-23` |
 | 4. desktop com toque, partida vencida só com cliques | ok: 4/4 no Fácil, 48 pontos, 32 movimentos, resultado enviado | `f6-15`, `f6-16`, `f6-17` |
 | 5. Testar conexão: sucesso e endereço inexistente | ok: "Conexão OK" e "Falha no teste: Não foi possível conectar ao servidor.", sem exceção | `f6-02`, `f6-04` |

@@ -124,7 +124,8 @@ public class ConfigServidorTela extends TelaBase {
         formulario.selecionarCampo(campo);
         jogo.plataforma().pedirTexto(titulo, atual, false, texto -> {
             if (jogo.getScreen() == this) {
-                formulario.definirTexto(campo, texto);
+                String erro = formulario.definirTexto(campo, texto);
+                mensagem = erro == null ? "" : erro;
             }
         });
     }
