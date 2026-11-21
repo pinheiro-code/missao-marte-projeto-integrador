@@ -1,0 +1,47 @@
+# sha256sum dos fontes de domain, application e infrastructure da fase 3, conferidos na fase 4 com sha256sum -c
+f79266a04f8c2f83f890323641b33e66ce50776a15a26b79a91e8faea5d1565b *br/edu/unifor/missaomarte/application/GameSession.java
+ef901afea94ef700b07065f1258e4ed9912154e34aa1932ff26644bb65293141 *br/edu/unifor/missaomarte/application/MissaoFactory.java
+3e66af9f2cf9ff324c83062b3ade250fdfe6f31653d9c7b9456348acba272559 *br/edu/unifor/missaomarte/application/RankingEntry.java
+bbf75711fdb51386999bcb4a10b8737394f3a9ea6fb575cc748cf97acee65657 *br/edu/unifor/missaomarte/application/RankingRepository.java
+eb2c1e7253f4abfa77c50767881f348077fbd923a57364d2905a3f150f115aaa *br/edu/unifor/missaomarte/application/RankingService.java
+66347eb44e0b73be3d12e3c9783702ae4b39d0dd70952d7c6b9bf753f7eb058f *br/edu/unifor/missaomarte/application/ResultadoTurno.java
+f2f3f927adb8700266d569708280b8adef094fb57e08d510933a57b9492f6c4c *br/edu/unifor/missaomarte/domain/Acao.java
+652d2ef9ef8c20839a4cbf098c04eee43f5ac95275aa59e2e759e201d96e4b0d *br/edu/unifor/missaomarte/domain/Asteroide.java
+628238dbeb5bc5e6e75e382acb147c97593c076c0825d140509e30bc136928b2 *br/edu/unifor/missaomarte/domain/Astronauta.java
+53468ca0227e7df53435190442ee3917a034596baa6f5466f9934dc782892552 *br/edu/unifor/missaomarte/domain/Base.java
+eae5f57197f4d8ce4398a9e090fe8ebe557495a0cb1f6a64f35b8b16593f0c45 *br/edu/unifor/missaomarte/domain/Dificuldade.java
+94b89f3465e3d8e40c62e516b45d528056ea95de43cab14bb7fb97b82f7d5835 *br/edu/unifor/missaomarte/domain/ElementoMapa.java
+17b6d193e4543cb12cba22cf3c58c7cba0e6874ea7f49b69398ed5baf8646fd4 *br/edu/unifor/missaomarte/domain/Engenheiro.java
+4af804d0e85cf1bf54bce6c5777daf5f3e75fe0ec47f7a1af38e79e51c5e82bb *br/edu/unifor/missaomarte/domain/Inimigo.java
+286920de44332e0368de24779799f1698ca752a2326ed004fb38d45df20f38d5 *br/edu/unifor/missaomarte/domain/Missao.java
+6348ff61ae7c1c4914dfc4d07dc8e38beec7e89ac3662973bb83aae23422cc04 *br/edu/unifor/missaomarte/domain/Nave.java
+f3257346d948d2d19db4e8fef5e6aeb3aaac6ef0b2c3ac98508a6507419ebf75 *br/edu/unifor/missaomarte/domain/Passageiro.java
+63ab556dec83e44c79e19cdaab68e06f5afa4f4f45331342dd1b4df18beb3de9 *br/edu/unifor/missaomarte/domain/Posicao.java
+0cabfdf148582946fac22b3cd6705f03bb70f746727e46014498a32c7ad23fca *br/edu/unifor/missaomarte/domain/Professor.java
+bee3ea4c5e19d48c8c16b4521df9ec66497efedcdec604bd33e6593cfc5c223a *br/edu/unifor/missaomarte/infrastructure/FileRankingRepository.java
+
+# resultado na fase 4
+br/edu/unifor/missaomarte/application/GameSession.java: FAILED
+br/edu/unifor/missaomarte/application/MissaoFactory.java: OK
+br/edu/unifor/missaomarte/application/RankingEntry.java: OK
+br/edu/unifor/missaomarte/application/RankingRepository.java: OK
+br/edu/unifor/missaomarte/application/RankingService.java: OK
+br/edu/unifor/missaomarte/application/ResultadoTurno.java: FAILED
+br/edu/unifor/missaomarte/domain/Acao.java: OK
+br/edu/unifor/missaomarte/domain/Asteroide.java: OK
+br/edu/unifor/missaomarte/domain/Astronauta.java: OK
+br/edu/unifor/missaomarte/domain/Base.java: OK
+br/edu/unifor/missaomarte/domain/Dificuldade.java: OK
+br/edu/unifor/missaomarte/domain/ElementoMapa.java: OK
+br/edu/unifor/missaomarte/domain/Engenheiro.java: OK
+br/edu/unifor/missaomarte/domain/Inimigo.java: OK
+br/edu/unifor/missaomarte/domain/Missao.java: OK
+br/edu/unifor/missaomarte/domain/Nave.java: OK
+br/edu/unifor/missaomarte/domain/Passageiro.java: OK
+br/edu/unifor/missaomarte/domain/Posicao.java: OK
+br/edu/unifor/missaomarte/domain/Professor.java: OK
+br/edu/unifor/missaomarte/infrastructure/FileRankingRepository.java: OK
+sha256sum: WARNING: 2 computed checksums did NOT match
+
+# novo na fase 4
+br/edu/unifor/missaomarte/application/EventoJogo.java
