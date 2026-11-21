@@ -34,6 +34,7 @@ public class PartidaTela extends TelaBase {
     private List<String> mensagens = List.of("Boa missão! Leve todos os passageiros até a base L.");
     private Acao ultimaDirecao = Acao.CIMA;
     private boolean registrado;
+    private boolean saiu;
     private List<String> resumo;
 
     /** A tela guarda a Missao que a fábrica criou só para desenhar o mapa; quem muda o estado é a sessão. */
@@ -46,6 +47,10 @@ public class PartidaTela extends TelaBase {
 
     @Override
     protected boolean teclaApertada(int tecla) {
+        // no LWJGL3 o resto das teclas do mesmo quadro ainda chega aqui depois da troca de tela
+        if (saiu) {
+            return false;
+        }
         if (sessao.acabou()) {
             return teclaNoFim(tecla);
         }
@@ -56,6 +61,7 @@ public class PartidaTela extends TelaBase {
         if (acao == Acao.SAIR) {
             sessao.jogar(Acao.SAIR);
             Gdx.app.log(TAG, "missão abortada");
+            saiu = true;
             jogo.trocarTela(new MenuTela(jogo));
             return true;
         }
@@ -75,6 +81,7 @@ public class PartidaTela extends TelaBase {
         if (tecla != Keys.ENTER && tecla != Keys.NUMPAD_ENTER) {
             return false;
         }
+        saiu = true;
         jogo.trocarTela(sessao.venceu() ? new RankingTela(jogo, resumo) : new MenuTela(jogo));
         return true;
     }

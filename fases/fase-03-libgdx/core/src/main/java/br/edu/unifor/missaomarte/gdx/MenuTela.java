@@ -45,6 +45,7 @@ public class MenuTela extends TelaBase {
         try {
             jogo.ranking().limpar();
             aviso = "Ranking limpo.";
+            Gdx.app.log("Menu", "ranking limpo");
         } catch (UncheckedIOException e) {
             aviso = "Erro ao limpar o ranking: " + e.getCause().getMessage();
         }
