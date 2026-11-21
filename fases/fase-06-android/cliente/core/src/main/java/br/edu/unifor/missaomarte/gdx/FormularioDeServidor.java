@@ -71,16 +71,45 @@ public class FormularioDeServidor {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '.' || c == '-';
     }
 
-    /** O texto da caixa nativa: limpa o campo e aplica as mesmas regras a cada caractere. */
-    public void definirTexto(Campo alvo, String texto) {
+    /**
+     * O texto da caixa nativa substitui o campo. Caractere fora da regra recusa o texto inteiro (o campo
+     * fica como estava): filtrar faria de "servidor.com:8080" um "servidor.com8080" aceito sem aviso.
+     * Devolve null quando aplicou, ou a mensagem para a tela.
+     */
+    public String definirTexto(Campo alvo, String texto) {
         campo = alvo;
-        (alvo == Campo.ENDERECO ? endereco : porta).setLength(0);
-        if (texto == null) {
-            return;
+        String limpo = texto == null ? "" : texto.trim();
+        String erro = alvo == Campo.ENDERECO ? erroDoEndereco(limpo) : erroDaPorta(limpo);
+        if (erro != null) {
+            return erro;
         }
+        StringBuilder atual = alvo == Campo.ENDERECO ? endereco : porta;
+        atual.setLength(0);
+        atual.append(limpo);
+        return null;
+    }
+
+    private static String erroDoEndereco(String texto) {
         for (int i = 0; i < texto.length(); i++) {
-            digitar(texto.charAt(i));
+            if (!caractereDoEndereco(texto.charAt(i))) {
+                try {
+                    ConfiguracaoDoServidor.criar(texto, 1, false);
+                } catch (IllegalArgumentException e) {
+                    return e.getMessage();
+                }
+                return "Endereço inválido: use letras, números, hífen e ponto.";
+            }
         }
+        return texto.length() > MAXIMO_ENDERECO ? "O endereço é longo demais." : null;
+    }
+
+    private static String erroDaPorta(String texto) {
+        for (int i = 0; i < texto.length(); i++) {
+            if (texto.charAt(i) < '0' || texto.charAt(i) > '9') {
+                return "A porta só aceita números.";
+            }
+        }
+        return texto.length() > MAXIMO_PORTA ? "A porta deve ser de 1 a " + ConfiguracaoDoServidor.PORTA_MAXIMA + "." : null;
     }
 
     public void apagar() {
