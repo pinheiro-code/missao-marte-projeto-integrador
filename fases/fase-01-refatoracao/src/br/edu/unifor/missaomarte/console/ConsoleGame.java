@@ -116,12 +116,12 @@ public class ConsoleGame {
     private int lerTamanhoMapa(Dificuldade dificuldade) {
         int tamanho;
         try {
-            tamanho = Integer.parseInt(lerLinha("Tamanho do mapa (ex: 5 para mapa de -5 a +5): ", "5"));
+            tamanho = Integer.parseInt(lerLinha("Tamanho do mapa (ex: 5 para mapa de -5 a +5): ", String.valueOf(TAMANHO_PADRAO)));
             if (tamanho <= 0) {
                 tamanho = TAMANHO_PADRAO;
             }
         } catch (NumberFormatException e) {
-            System.out.println("Entrada inválida, usando tamanho padrão (5).");
+            System.out.printf("Entrada inválida, usando tamanho padrão (%d).%n", TAMANHO_PADRAO);
             tamanho = TAMANHO_PADRAO;
         }
         int ajustado = dificuldade.ajustarTamanho(tamanho);
@@ -165,13 +165,17 @@ public class ConsoleGame {
         }
         System.out.println(LINHA);
 
+        boolean entrou;
         try {
-            if (rankingService.registrar(sessao.piloto(), sessao.pontos(), sessao.dificuldade(),
-                    sessao.entregues(), sessao.duracaoSegundos())) {
-                System.out.println("Parabéns! Você entrou para o Top 5 de pilotos!");
-            }
+            entrou = rankingService.registrar(sessao.piloto(), sessao.pontos(), sessao.dificuldade(),
+                    sessao.entregues(), sessao.duracaoSegundos());
         } catch (UncheckedIOException e) {
+            // só falha ao gravar quem já entrou; o original avisava e dava os parabéns mesmo assim
             System.out.println("Não foi possível salvar o ranking: " + e.getCause().getMessage());
+            entrou = true;
+        }
+        if (entrou) {
+            System.out.println("Parabéns! Você entrou para o Top 5 de pilotos!");
         }
     }
 

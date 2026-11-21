@@ -59,10 +59,6 @@ public enum Dificuldade {
         return inimigos;
     }
 
-    public int tamanhoMinimo() {
-        return tamanhoMinimo;
-    }
-
     @Override
     public String toString() {
         return nome;

@@ -11,6 +11,7 @@ import java.util.Map;
 public class MapaRenderer {
 
     private static final char VAZIO = '.';
+    private static final String FIM_DE_LINHA = System.lineSeparator();
 
     public String desenhar(Missao missao) {
         int tamanho = missao.tamanho();
@@ -19,15 +20,15 @@ public class MapaRenderer {
         for (int x = -tamanho; x <= tamanho; x++) {
             texto.append(String.format(" %2d", x));
         }
-        texto.append("\n    ");
+        texto.append(FIM_DE_LINHA).append("    ");
         texto.append(" __".repeat(2 * tamanho + 1));
-        texto.append('\n');
+        texto.append(FIM_DE_LINHA);
         for (int y = -tamanho; y <= tamanho; y++) {
             texto.append(String.format("%3d|", y));
             for (int x = -tamanho; x <= tamanho; x++) {
                 texto.append(String.format(" %2c", simboloEm(elementos, new Posicao(x, y))));
             }
-            texto.append('\n');
+            texto.append(FIM_DE_LINHA);
         }
         texto.append("Legenda: ").append(legenda(elementos));
         return texto.toString();

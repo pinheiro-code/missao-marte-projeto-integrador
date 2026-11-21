@@ -12,7 +12,7 @@
 ----------------------
 Escolha uma opção: 
 ====== RANKING TOP 5 PILOTOS ======
-1. Ana - 70 pts | Dificuldade: Fácil | Coletados: 4 | Tempo: 0s | 2026-11-21 12:14:01
+1. Ana - 70 pts | Dificuldade: Fácil | Coletados: 4 | Tempo: 0s | 2026-11-21 12:31:42
 ===================================
 
 --- MENU PRINCIPAL ---

@@ -97,11 +97,11 @@ public class FileRankingRepository implements RankingRepository {
             String valor = chaveValor[1].trim();
             try {
                 switch (chave) {
-                    case "name" -> name = texto(valor).replace("\\\"", "\"");
+                    case "name" -> name = texto(valor, null);
                     case "score" -> score = Integer.parseInt(valor);
-                    case "dificuldade" -> dificuldade = Dificuldade.deTexto(texto(valor));
+                    case "dificuldade" -> dificuldade = Dificuldade.deTexto(texto(valor, "medio"));
                     case "passageirosColetados" -> passageiros = Integer.parseInt(valor);
-                    case "dataHora" -> dataHora = texto(valor);
+                    case "dataHora" -> dataHora = texto(valor, "");
                     case "tempoJogo" -> tempoJogo = Long.parseLong(valor);
                     default -> { }
                 }
@@ -115,10 +115,11 @@ public class FileRankingRepository implements RankingRepository {
         return new RankingEntry(name, score, dificuldade, passageiros, dataHora, tempoJogo);
     }
 
-    private static String texto(String valor) {
+    /** Texto sem aspas nas duas pontas não vale (nome com vírgula, por exemplo): fica o padrão. */
+    private static String texto(String valor, String padrao) {
         if (valor.length() >= 2 && valor.startsWith("\"") && valor.endsWith("\"")) {
-            return valor.substring(1, valor.length() - 1);
+            return valor.substring(1, valor.length() - 1).replace("\\\"", "\"");
         }
-        return valor;
+        return padrao;
     }
 }

@@ -24,9 +24,8 @@ public class MissaoFactory {
     }
 
     public Missao criar(Dificuldade dificuldade, int tamanho) {
-        if (tamanho < dificuldade.tamanhoMinimo()) {
-            throw new IllegalArgumentException(
-                    "Mapa " + tamanho + " é menor que o mínimo " + dificuldade.tamanhoMinimo() + " de " + dificuldade);
+        if (dificuldade.ajustarTamanho(tamanho) != tamanho) {
+            throw new IllegalArgumentException("Mapa " + tamanho + " é pequeno demais para " + dificuldade);
         }
         Missao missao = new Missao(tamanho, new Nave(CAPACIDADE_NAVE));
         for (int i = 0; i < dificuldade.passageiros(); i++) {

@@ -64,7 +64,7 @@ Código: `src/br/edu/unifor/missaomarte/`, 23 classes.
 | Defeito | O que fizemos |
 |---|---|
 | Mapa 1 no Médio ou no Difícil trava o jogo (o sorteio não acha célula livre). Na fase 0, `timeout 5` termina com 124 | Corrigido: `Dificuldade.ajustarTamanho` sobe para o mínimo e o console avisa; `MissaoFactory.criar` recusa mapa menor que o mínimo. Prova no passo extra da seção 5.7 |
-| Nome de piloto com vírgula quebra a leitura do `ranking.json` (o leitor separa os campos por vírgula, `Main.java:510`) | Mantido (o formato do arquivo é o mesmo). Está nas limitações |
+| Nome de piloto com vírgula quebra a leitura do `ranking.json` (o leitor separa os campos por vírgula, `Main.java:510`) | Mantido como no original: a entrada com vírgula no nome é descartada na leitura. Está nas limitações |
 | Depois que os inimigos andam, um inimigo pode ficar na célula da nave e some do desenho (só um símbolo por célula) | Mantido: a ordem de desenho é a do original. Visto na partida do diagnóstico |
 
 ### Mudanças de comportamento
@@ -80,7 +80,7 @@ Pedidas pelo enunciado da fase 1 (4.3) ou necessárias para ele:
 Consequências pequenas da refatoração:
 
 6. **Legenda montada pelos elementos do mapa.** O enunciado (4.2.6) pede a legenda a partir das entidades. Ela mostra só os tipos que estão no mapa, na ordem em que aparecem; o `.=Vazio` vem sempre no fim. Exemplo: no Fácil não existe Astronauta (os 4 passageiros são Professor e Engenheiro), então o `T=Astronauta` não aparece; quando todos embarcam, `P` e `E` somem.
-7. **Alerta de "todos resgatados".** O alerta da fase 0 (`Main.java:205`) passa a valer quando não resta ninguém no mapa e ainda falta entregar.
+7. **Alerta de "todos resgatados".** O alerta da fase 0 (`Main.java:206`) passa a valer quando não resta ninguém no mapa e ainda falta entregar.
 8. **Fim da entrada depois de uma linha vazia.** A fase 0 abortava na hora; a fase 1 redesenha o mapa uma vez antes de mostrar `Entrada encerrada. Missão abortada.`
 9. **Removido o que ninguém usava:** o identificador `"A-1"` da nave e os métodos `Nave.moveUp/moveDown/moveLeft/moveRight` (`Nave.java:27-30` da fase 0).
 
@@ -272,7 +272,7 @@ classDiagram
 | Leitor de JSON feito à mão | `FileRankingRepository.interpretarObjeto` separa por vírgula: nome com vírgula quebra a leitura | Com o Gradle (fase 2) dá para usar uma biblioteca de JSON, ou escapar a vírgula na gravação |
 | Sorteio por tentativa | `MissaoFactory.posicaoLivre` (`do/while`) | Com o mapa quase cheio fica lento; listar as células livres e embaralhar resolve |
 | Montagem e jogo na mesma interface da `Missao` | `Missao.adicionar` é público para todos | Passar as listas prontas pelo construtor da `Missao` |
-
+| A regra de "novo recorde" ficou no console | `ConsoleGame.exibirVitoria` compara os pontos com o primeiro do ranking | Levar a comparação para o `RankingService`, que já tem a regra do top 5 |
 ## 5.7 Como executar e testar
 
 ### Compilar e rodar
@@ -393,18 +393,18 @@ Nave em (2,-1) | Pontos: 27 | Vidas: 1 | A bordo: 0/5 | Entregues: 0 | Restantes
 
 ```text
 ====== RANKING TOP 5 PILOTOS ======
-1. Ana - 70 pts | Dificuldade: Fácil | Coletados: 4 | Tempo: 0s | 2026-11-21 12:14:01
+1. Ana - 70 pts | Dificuldade: Fácil | Coletados: 4 | Tempo: 0s | 2026-11-21 12:31:42
 ===================================
 
 $ cat ranking.json        (docs/evidencias/ranking-depois-da-vitoria.txt)
-[{"name":"Ana","score":70,"dificuldade":"FACIL","passageirosColetados":4,"dataHora":"2026-11-21 12:14:01","tempoJogo":0}]
+[{"name":"Ana","score":70,"dificuldade":"FACIL","passageirosColetados":4,"dataHora":"2026-11-21 12:31:42","tempoJogo":0}]
 ```
 
 **7. Limpar o ranking** (`entrada-limpar.txt`: `2`, `3`, `s`, `2`, `4`). Resultado: ok; depois do passo, `ranking.json` não existe mais.
 
 ```text
 ====== RANKING TOP 5 PILOTOS ======
-1. Ana - 70 pts | Dificuldade: Fácil | Coletados: 4 | Tempo: 0s | 2026-11-21 12:14:01
+1. Ana - 70 pts | Dificuldade: Fácil | Coletados: 4 | Tempo: 0s | 2026-11-21 12:31:42
 Você realmente deseja limpar o histórico de ranking? (s/n): Ranking resetado com sucesso!
 ====== RANKING TOP 5 PILOTOS ======
  - Nenhum registro encontrado. Seja o primeiro a jogar!
