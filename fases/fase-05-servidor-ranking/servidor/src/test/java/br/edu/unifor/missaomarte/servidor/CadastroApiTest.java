@@ -121,6 +121,14 @@ class CadastroApiTest extends ApiTeste {
     }
 
     @Test
+    void jsonCortadoNoMeioDeUmCampoTambemDaODetailGenerico() throws Exception {
+        postar("/api/usuarios", "{\"nome\":\"ab")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("O corpo da requisição não é um JSON válido."))
+                .andExpect(jsonPath("$.erros").doesNotExist());
+    }
+
+    @Test
     void nomeUnicoSemCaixaGarantidoPeloBanco() {
         LocalDateTime agora = LocalDateTime.now();
         usuarios.saveAndFlush(new Usuario("Joao", "joao", "hash-qualquer", agora));
