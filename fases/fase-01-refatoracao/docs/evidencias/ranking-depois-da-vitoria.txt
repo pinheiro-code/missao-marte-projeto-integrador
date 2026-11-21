@@ -1,0 +1,2 @@
+$ cat ranking.json
+[{"name":"Ana","score":70,"dificuldade":"FACIL","passageirosColetados":4,"dataHora":"2026-11-21 12:14:01","tempoJogo":0}]

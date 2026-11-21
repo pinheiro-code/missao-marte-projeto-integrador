@@ -12,7 +12,7 @@ Cada fase fica numa pasta própria em `fases/`. Uma fase nova nunca altera as an
 | Fase | Pasta | O que é | Sprint | Situação |
 |---|---|---|---|---|
 | 0 | `fases/fase-00-console` | Jogo de console original, sem alteração | 1 | pronta |
-| 1 | `fases/fase-01-refatoracao` | Refatoração em camadas (domain, application, console, infrastructure) | 1 | em andamento |
+| 1 | `fases/fase-01-refatoracao` | Refatoração em camadas (domain, application, console, infrastructure) | 1 | pronta |
 | 2 | `fases/fase-02-gradle` | Build, testes e execução pelo Gradle Wrapper | 1 | em andamento |
 | 3 e 4 | a definir | libGDX e interface gráfica | 2 | backlog |
 | 5 | a definir | Servidor de ranking (Spring Boot) | 3 | backlog |
@@ -35,7 +35,15 @@ javac -encoding UTF-8 -d out src/*.java
 java -cp out Main
 ```
 
-O `ranking.json` é criado na pasta de onde o jogo foi iniciado (ignorado pelo Git).
+### Fase 1
+
+Na pasta `fases/fase-01-refatoracao`, no PowerShell:
+
+```powershell
+.\build.ps1 -Run
+```
+
+Em todas as fases o `ranking.json` é criado na pasta de onde o jogo foi iniciado (ignorado pelo Git).
 
 As outras fases têm o próprio README com os comandos.
 
