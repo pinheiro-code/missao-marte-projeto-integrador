@@ -1,0 +1,14 @@
+# saída de compilação
+build/
+out/
+*.class
+
+# Gradle
+.gradle/
+local.properties
+
+# IDE
+.idea/
+
+# gerado ao jogar
+ranking.json
