@@ -37,7 +37,7 @@ public class PartidaService {
     }
 
     public PartidaResponse registrar(Long usuarioId, PartidaRequest pedido) {
-        // Token ainda válido de um usuário que não existe mais (banco apagado com o servidor no mesmo ar).
+        // Token ainda válido de um usuário que não existe mais (banco apagado sem trocar a chave do token).
         Usuario dono = usuarios.findById(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário do token não existe."));
         LocalDateTime agora = LocalDateTime.now(relogio).truncatedTo(ChronoUnit.SECONDS);
