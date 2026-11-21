@@ -1,0 +1,35 @@
+> Task :core:compileJava UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :lwjgl3:compileJava UP-TO-DATE
+> Task :lwjgl3:processResources NO-SOURCE
+> Task :lwjgl3:classes UP-TO-DATE
+
+> Task :lwjgl3:run
+[MissaoMarte] create()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.resize(800, 600)
+[Menu] ranking limpo
+[Tela] MenuTela.hide()
+[Tela] NovaPartidaTela.show()
+[Tela] NovaPartidaTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[Tela] NovaPartidaTela.hide()
+[Tela] PartidaTela.show()
+[Tela] PartidaTela.resize(800, 600)
+[Tela] NovaPartidaTela.dispose()
+[Tela] PartidaTela.resize(1200, 900)
+[Partida] missão abortada
+[Tela] PartidaTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(1200, 900)
+[Tela] PartidaTela.dispose()
+[Tela] MenuTela.pause()
+[MissaoMarte] dispose()
+[Tela] MenuTela.hide()
+[Tela] MenuTela.dispose()
+
+BUILD SUCCESSFUL in 18s
+4 actionable tasks: 1 executed, 3 up-to-date

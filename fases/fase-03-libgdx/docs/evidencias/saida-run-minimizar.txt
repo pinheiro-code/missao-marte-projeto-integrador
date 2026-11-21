@@ -32,6 +32,7 @@
 [Tela] PartidaTela.resize(800, 600)
 [Tela] NovaPartidaTela.dispose()
 [Partida] CIMA -> pontos 29, vidas 3, a bordo 0, entregues 0/4
+[Partida] missão abortada
 [Tela] PartidaTela.hide()
 [Tela] MenuTela.show()
 [Tela] MenuTela.resize(800, 600)
@@ -43,4 +44,3 @@
 
 BUILD SUCCESSFUL in 2m 6s
 4 actionable tasks: 1 executed, 3 up-to-date
-Binary file C:/Users/ARTHUR~1/AppData/Local/Temp/claude/ef7c09ee9d11a44c/f918eb53-3870-491f-8ded-2f7a778f22fe/scratchpad/run-f3-1.log matches

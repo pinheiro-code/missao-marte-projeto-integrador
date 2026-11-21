@@ -67,6 +67,7 @@
 [Partida] ESQUERDA -> pontos 46, vidas 2, a bordo 3, entregues 1/4
 [Partida] CIMA -> pontos 45, vidas 2, a bordo 3, entregues 1/4
 [Partida] CIMA -> pontos 44, vidas 2, a bordo 0, entregues 4/4
+[Partida] vitória registrada no ranking: Você entrou no Top 5!
 [Tela] PartidaTela.hide()
 [Tela] RankingTela.show()
 [Tela] RankingTela.resize(800, 600)
@@ -98,4 +99,3 @@
 
 BUILD SUCCESSFUL in 1m 52s
 4 actionable tasks: 1 executed, 3 up-to-date
-Binary file C:/Users/ARTHUR~1/AppData/Local/Temp/claude/ef7c09ee9d11a44c/f918eb53-3870-491f-8ded-2f7a778f22fe/scratchpad/run-f3.log matches

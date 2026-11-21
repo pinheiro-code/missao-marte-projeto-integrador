@@ -40,6 +40,8 @@ Antes:
 flowchart TD
     Main --> ConsoleGame
     Main --> FileRankingRepository
+    Main --> RankingService
+    Main --> MissaoFactory
     ConsoleGame --> MapaRenderer
     ConsoleGame --> GameSession
     ConsoleGame --> RankingService
@@ -141,7 +143,7 @@ jogo.batch().setProjectionMatrix(jogo.camera().combined);
 jogo.formas().setProjectionMatrix(jogo.camera().combined);
 ```
 
-e o `resize` chama `viewport.update(largura, altura, true)`. A captura `docs/capturas/f3-redimensionada.png` foi tirada com a janela em 1084 x 601 (o log mostra `MenuTela.resize(1084, 601)`): o menu continua do mesmo tamanho e proporção.
+e o `resize` chama `viewport.update(largura, altura, true)`. A captura `docs/capturas/f3-redimensionada.png` foi tirada com a janela em 1200 x 900 (o log `docs/evidencias/saida-run-redimensionar.txt` mostra `PartidaTela.resize(1200, 900)`): o mapa e o painel aumentaram 1,5 vez, com a mesma proporção.
 
 **Por turnos, mas desenhando a cada quadro.** O `render()` roda 60 vezes por segundo, mas só lê o estado: desenha o mapa a partir de `missao.elementos()` e o painel a partir da `GameSession`. O estado só muda no `keyDown` da `PartidaTela`, que chama `sessao.jogar(acao)` uma vez por tecla. Assim o jogo continua igual ao console: uma tecla válida, um turno. Desenhar a cada quadro é o que permite redimensionar e minimizar sem perder a imagem.
 
@@ -152,6 +154,8 @@ e o `resize` chama `viewport.update(largura, altura, true)`. A captura `docs/cap
 **Ranking: `RankingRepository` e `RankingEntry` já estavam em `application`.** O enunciado parte de uma fase 2 em que o ranking estava no console e a interface em `infrastructure`, e manda mover para `application`. Na nossa fase 1 isso já tinha sido feito: `RankingRepository`, `RankingEntry` e `RankingService` (listar, registrar devolvendo se entrou, limpar) moram em `application`, e só o `FileRankingRepository` está em `infrastructure`. Por isso não houve mudança de pacote nesta fase, e os arquivos continuam idênticos aos da fase 2 (o enunciado dá `application.ranking` só como exemplo). A tela gráfica usa o mesmo `RankingService` que o console usava, sem copiar regra.
 
 **Top 5, não Top 10.** O enunciado fala em Top 10 (5.4) e em 28 testes herdados. O jogo que a equipe recebeu na fase 0 guarda o Top 5, o AVA da disciplina manda preservar as regras e o próprio enunciado diz "preserve as regras atuais". Mudar para 10 seria mudar uma regra para seguir o texto de outra versão do jogo, então ficou 5, e o `RankingServiceTest` cobre o limite de 5. Pela mesma razão, os herdados são os nossos 24 testes da fase 2, não 28.
+
+**`ElementoMapa.simbolo()` no papel do `ObjetoRenderizavel#getSimbolo()`.** O enunciado fala numa interface `ObjetoRenderizavel`. No nosso domínio, desde a fase 1, quem faz esse papel é a interface `ElementoMapa`, com `char simbolo()`: nave, base, passageiros, asteroides e inimigos a implementam. Criar outra interface só para mudar o nome mexeria no `domain`, que tem que ficar idêntico; a `PartidaTela` usa `simbolo()` para escolher a cor e a letra, sem `instanceof`.
 
 **Por que a conversão de coordenadas é uma classe separada (`Geometria`).** No jogo, `CIMA` é `y - 1` (o Y cresce para baixo, como as linhas impressas no console); no libGDX o Y cresce para cima. Se cada tela fizesse a conta, o erro de inverter o eixo apareceria em vários lugares. A `Geometria` faz a conta num lugar só, não importa nada do libGDX e por isso é testada sem janela (`GeometriaTest`). Ela também fixa o layout: células de 48 px a partir de (16, 36), mapa de 528 x 528, e aceita `float` para a fase 4 poder desenhar posições fracionárias.
 
@@ -186,8 +190,10 @@ export JAVA_TOOL_OPTIONS='-Djdk.net.unixdomain.tmpdir=C:/Users/ARTHUR~1/.gradle/
 5. **Semente.** O `-Dmissaomarte.semente=4` passado ao `gradlew` fica no processo do Gradle, não no do jogo. O `lwjgl3/build.gradle` repassa com `systemProperty 'missaomarte.semente', System.getProperty('missaomarte.semente', '')`. Quando ninguém passa a semente, chega uma string vazia; o `DesktopLauncher` testa `isBlank()` (e não só `null`), porque `Long.parseLong("")` derrubaria o jogo.
 6. **Problema real: como testar a janela sem digitar nas outras.** Para tirar as capturas, a primeira tentativa usou `SendKeys` e captura da área da tela. A captura saiu com outra janela por cima (o jogo não estava na frente) e o `SendKeys` digitaria em qualquer janela que estivesse ativa. Troquei por um script PowerShell que manda as teclas por `PostMessage` direto para a janela "Missão Marte" (com o código de varredura certo, que o GLFW usa para saber a tecla) e captura com `PrintWindow`. Nessa primeira execução, uma tecla `1` chegou à janela quando ela abriu, sem vir do script (o log mostra o menu indo para a nova partida); as execuções seguintes, só com o `PostMessage`, não tiveram tecla fora do roteiro.
 7. **Problema real: letras sobrepostas na base.** Na primeira partida a nave começou em cima da base e a célula mostrava o `@` e o `L` desenhados um sobre o outro. Os retângulos já saíam na ordem certa (base primeiro, nave por cima), mas o texto também era desenhado para todos. Passei a escrever só a letra do elemento de cima de cada célula (`PartidaTela.coberto`).
-8. **Tecla que consome turno.** Conferido no log: um `X` enviado no começo da partida não gerou linha de turno nem mudou os pontos; o `W` seguinte gerou `CIMA -> pontos 29`.
-9. **Partida completa com semente 4** (seção 8.5): duas entregas, uma colisão de propósito, vitória registrada uma vez; depois uma partida no difícil perdida por colisões.
+8. **Problema achado na revisão: teclas atrasadas.** No backend LWJGL3 as teclas de um mesmo quadro são entregues todas ao processador que estava ativo no começo do quadro, mesmo que a tela tenha trocado no meio. Dois `Enter` no mesmo quadro na tela de fim abririam duas telas de ranking. A `PartidaTela` passou a guardar `saiu` e a ignorar teclas depois de trocar de tela. (Hipótese pelo funcionamento da fila de eventos; não reproduzi com dois `Enter`.)
+9. **Problema real: log sem acento.** O `System.out` do Java nesta máquina sai em cp1252. A primeira versão das evidências passou por um `grep` que tratou o arquivo como binário e perdeu as linhas com acento (por exemplo, `vitória registrada`). Regravei as evidências convertendo com `iconv -f cp1252 -t utf-8`.
+10. **Tecla que consome turno.** Conferido no log: um `X` enviado no começo da partida não gerou linha de turno nem mudou os pontos; o `W` seguinte gerou `CIMA -> pontos 29`.
+11. **Partida completa com semente 4** (seção 8.5): duas entregas, uma colisão de propósito, vitória registrada uma vez; depois uma partida no difícil perdida por colisões.
 
 ## 8.5 Testes e evidências
 
@@ -252,20 +258,20 @@ O `ranking.json` apareceu na pasta da fase com `[{"name":"Arthur","score":44,"di
 | 1. `gradlew --version` | Gradle 8.7, JVM 17.0.21.1 | `saida-clean-build.txt` |
 | 2. `gradlew clean build` | `BUILD SUCCESSFUL`, 38 testes, 0 falhas | `saida-clean-build.txt` |
 | 3. `:lwjgl3:run` abre a janela | log com `create()`, `MenuTela.show()` e dois `resize` | `saida-run-semente-4.txt`, `f3-menu.png` |
-| 4. Menu 1 a 4; 3 limpa | `3` antes da partida apagou o ranking (a tela 2 mostrou "Nenhum registro"); `4` fechou o jogo na primeira execução | `f3-ranking-vazio.png`, `saida-run-minimizar.txt` |
+| 4. Menu 1 a 4; 3 limpa | `3` apagou o ranking (log `[Menu] ranking limpo` e a tela 2 mostrando "Nenhum registro"); `4` fechou o jogo na primeira execução | `f3-ranking-vazio.png`, `saida-run-redimensionar.txt`, `saida-run-minimizar.txt` |
 | 5. Nova partida | nome "Arthurx", `Backspace` apagou o x, seta mudou para Fácil, `Esc` voltou ao menu (primeira execução) | `f3-nova-partida.png`, `saida-run-minimizar.txt` |
 | 6. `W` sobe na tela; tecla sem ação não gasta turno | `CIMA` levou a nave da linha `y = 0` para a de cima; o `X` não gerou turno | `f3-embarque.png`, logs |
 | 7. Embarcar com e sem passageiro | com: "Passageiro Dr. Lima embarcado com sucesso! +10 pontos!"; sem: "Nenhum passageiro nesta posição." | `f3-embarque.png`, `f3-derrota.png` |
 | 8. Entregar e conferir indicadores | "Passageiros entregues na base: 1. Total entregues: 1/4."; a bordo 0 + entregues 1 + restantes 3 = 4 | `f3-entrega.png` |
 | 9. Colidir | asteroide: vidas 3 → 2 e "Alerta! Colisão detectada! Vidas restantes: 2"; o ponto do movimento foi cobrado | `f3-colisao.png` |
 | 10. Vitória, ranking e derrota | vitória com caixa e Enter para o ranking com resumo; no difícil, três colisões seguidas no asteroide deram "GAME OVER! A nave foi destruída." e Enter voltou ao menu | `f3-vitoria.png`, `f3-ranking-resumo.png`, `f3-derrota.png` |
-| 11. Redimensionar e minimizar | `resize(1084, 601)` com a proporção mantida; minimizar deu `resize(0, 0)` + `pause()` e restaurar `resume()` | `f3-redimensionada.png`, `saida-run-minimizar.txt` |
+| 11. Redimensionar e minimizar | `resize(1200, 900)` com a proporção mantida; minimizar deu `resize(0, 0)` + `pause()` e restaurar `resume()` | `f3-redimensionada.png`, `saida-run-minimizar.txt` |
 | 12. Fechar | `MenuTela.pause()` antes de `[MissaoMarte] dispose()` nas duas execuções | logs |
 | 13. `ranking.json` na pasta da fase | criado em `fases/fase-03-libgdx/ranking.json` | conteúdo acima |
 | 14. Nada de `com.badlogic` fora de `gdx`/`lwjgl3` | `grep` vazio | comando acima |
 | 15. Fases anteriores intactas | `git diff --stat mm-03-gradle HEAD -- fases/fase-00-console fases/fase-01-refatoracao fases/fase-02-gradle` sem saída; `exercicio10/src` é a pasta do professor, fora deste repositório | comando |
 
-O que **não** foi verificado: as teclas chegaram por mensagem direta do Windows, não por um teclado físico, e o redimensionamento foi feito por `SetWindowPos`, não arrastando a borda. Na captura redimensionada aparece uma faixa preta à direita que não consegui explicar (a hipótese é a captura por `PrintWindow` pegar a superfície antes do quadro seguinte); o log confirma o `resize` e o menu manteve o tamanho e a proporção.
+O que **não** foi verificado: as teclas chegaram por mensagem direta do Windows, não por um teclado físico, e o redimensionamento foi feito por `SetWindowPos`, não arrastando a borda. Nas capturas redimensionadas aparece uma faixa preta (à direita numa tentativa em 1084 x 601, embaixo, no lugar do rodapé, em 1200 x 900) que não consegui explicar: um `FitViewport` com `ScreenUtils.clear` na janela inteira não deveria deixar faixa preta. A hipótese é a captura por `PrintWindow` pegar a superfície do OpenGL antes do quadro seguinte; o log confirma o `resize` e o mapa manteve a proporção. Não olhei a janela com os olhos, só pelas capturas.
 
 ## 8.6 Limitações e próximos passos
 
