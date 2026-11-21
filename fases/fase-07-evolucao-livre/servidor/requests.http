@@ -1,0 +1,43 @@
+### Chamadas de exemplo da API do Missão Marte (IntelliJ HTTP Client ou extensão REST Client do VS Code).
+### Suba o servidor antes: .\gradlew bootRun --console=plain
+### Depois do login, copie o valor de "token" da resposta para a variável abaixo.
+
+@api = http://127.0.0.1:8080
+@token = cole-aqui-o-token-do-login
+
+### Cadastro (201; 409 se o nome já existe, sem diferenciar maiúsculas; 400 se inválido)
+POST {{api}}/api/usuarios
+Content-Type: application/json
+
+{"nome": "ana_01", "senha": "senha-forte-123"}
+
+### Login (200 com o token; 401 "Usuário ou senha inválidos.")
+POST {{api}}/api/auth/login
+Content-Type: application/json
+
+{"nome": "ana_01", "senha": "senha-forte-123"}
+
+### Registrar partida (201). Um campo "usuario" no corpo seria ignorado: o dono vem do token.
+POST {{api}}/api/partidas
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{"dificuldade": "MEDIO", "resultado": "VITORIA", "pontuacao": 150, "duracaoSegundos": 95, "movimentos": 40}
+
+### Partida com dificuldade inválida (400 com o campo em "erros")
+POST {{api}}/api/partidas
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{"dificuldade": "IMPOSSIVEL", "resultado": "VITORIA", "pontuacao": 150, "duracaoSegundos": 95, "movimentos": 40}
+
+### Meu histórico (200, da mais recente para a mais antiga; tamanho de 1 a 50)
+GET {{api}}/api/partidas/minhas?pagina=0&tamanho=10
+Authorization: Bearer {{token}}
+
+### Ranking global (200, até 10 linhas)
+GET {{api}}/api/ranking
+Authorization: Bearer {{token}}
+
+### Ranking sem token (401)
+GET {{api}}/api/ranking

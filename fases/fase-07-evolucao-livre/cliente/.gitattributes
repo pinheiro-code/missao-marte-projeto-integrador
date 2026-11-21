@@ -1,0 +1,4 @@
+# o gradlew roda no bash e precisa de LF; o .bat precisa de CRLF
+gradlew text eol=lf
+*.bat text eol=crlf
+*.jar binary
