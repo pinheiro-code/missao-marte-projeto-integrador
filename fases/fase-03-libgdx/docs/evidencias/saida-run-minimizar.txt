@@ -1,0 +1,46 @@
+> Task :core:compileJava UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :lwjgl3:compileJava UP-TO-DATE
+> Task :lwjgl3:processResources NO-SOURCE
+> Task :lwjgl3:classes UP-TO-DATE
+
+> Task :lwjgl3:run
+[MissaoMarte] create()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.hide()
+[Tela] NovaPartidaTela.show()
+[Tela] NovaPartidaTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[Tela] NovaPartidaTela.resize(0, 0)
+[Tela] NovaPartidaTela.pause()
+[Tela] NovaPartidaTela.resize(800, 600)
+[Tela] NovaPartidaTela.resume()
+[Tela] NovaPartidaTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] NovaPartidaTela.dispose()
+[Tela] MenuTela.hide()
+[Tela] NovaPartidaTela.show()
+[Tela] NovaPartidaTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[Tela] NovaPartidaTela.hide()
+[Tela] PartidaTela.show()
+[Tela] PartidaTela.resize(800, 600)
+[Tela] NovaPartidaTela.dispose()
+[Partida] CIMA -> pontos 29, vidas 3, a bordo 0, entregues 0/4
+[Partida] missão abortada
+[Tela] PartidaTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] PartidaTela.dispose()
+[Tela] MenuTela.pause()
+[MissaoMarte] dispose()
+[Tela] MenuTela.hide()
+[Tela] MenuTela.dispose()
+
+BUILD SUCCESSFUL in 2m 6s
+4 actionable tasks: 1 executed, 3 up-to-date

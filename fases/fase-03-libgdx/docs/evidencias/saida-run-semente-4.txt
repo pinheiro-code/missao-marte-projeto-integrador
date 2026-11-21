@@ -1,0 +1,101 @@
+> Task :core:compileJava UP-TO-DATE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :lwjgl3:compileJava UP-TO-DATE
+> Task :lwjgl3:processResources NO-SOURCE
+> Task :lwjgl3:classes UP-TO-DATE
+
+> Task :lwjgl3:run
+[MissaoMarte] create()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.resize(800, 600)
+[Tela] MenuTela.hide()
+[Tela] RankingTela.show()
+[Tela] RankingTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[Tela] RankingTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] RankingTela.dispose()
+[Tela] MenuTela.hide()
+[Tela] NovaPartidaTela.show()
+[Tela] NovaPartidaTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[Tela] NovaPartidaTela.hide()
+[Tela] PartidaTela.show()
+[Tela] PartidaTela.resize(800, 600)
+[Tela] NovaPartidaTela.dispose()
+[Partida] ESQUERDA -> pontos 29, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> pontos 28, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> pontos 27, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> pontos 26, vidas 3, a bordo 0, entregues 0/4
+[Partida] ESQUERDA -> pontos 25, vidas 3, a bordo 0, entregues 0/4
+[Partida] CIMA -> pontos 24, vidas 3, a bordo 0, entregues 0/4
+[Partida] EMBARCAR -> pontos 34, vidas 3, a bordo 1, entregues 0/4
+[Partida] BAIXO -> pontos 33, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> pontos 32, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> pontos 31, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> pontos 30, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> pontos 29, vidas 3, a bordo 1, entregues 0/4
+[Partida] DIREITA -> pontos 28, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> pontos 27, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> pontos 26, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> pontos 25, vidas 3, a bordo 0, entregues 1/4
+[Partida] DIREITA -> pontos 24, vidas 3, a bordo 0, entregues 1/4
+[Partida] DIREITA -> pontos 23, vidas 3, a bordo 0, entregues 1/4
+[Partida] CIMA -> pontos 22, vidas 3, a bordo 0, entregues 1/4
+[Partida] EMBARCAR -> pontos 32, vidas 3, a bordo 1, entregues 1/4
+[Partida] DIREITA -> pontos 31, vidas 3, a bordo 1, entregues 1/4
+[Partida] DIREITA -> pontos 30, vidas 3, a bordo 1, entregues 1/4
+[Partida] BAIXO -> pontos 29, vidas 3, a bordo 1, entregues 1/4
+[Partida] EMBARCAR -> pontos 44, vidas 3, a bordo 2, entregues 1/4
+[Partida] ESQUERDA -> pontos 43, vidas 2, a bordo 2, entregues 1/4
+[Partida] DIREITA -> pontos 42, vidas 2, a bordo 2, entregues 1/4
+[Partida] DIREITA -> pontos 41, vidas 2, a bordo 2, entregues 1/4
+[Partida] BAIXO -> pontos 40, vidas 2, a bordo 2, entregues 1/4
+[Partida] BAIXO -> pontos 39, vidas 2, a bordo 2, entregues 1/4
+[Partida] BAIXO -> pontos 38, vidas 2, a bordo 2, entregues 1/4
+[Partida] BAIXO -> pontos 37, vidas 2, a bordo 2, entregues 1/4
+[Partida] BAIXO -> pontos 36, vidas 2, a bordo 2, entregues 1/4
+[Partida] EMBARCAR -> pontos 51, vidas 2, a bordo 3, entregues 1/4
+[Partida] ESQUERDA -> pontos 50, vidas 2, a bordo 3, entregues 1/4
+[Partida] ESQUERDA -> pontos 49, vidas 2, a bordo 3, entregues 1/4
+[Partida] ESQUERDA -> pontos 48, vidas 2, a bordo 3, entregues 1/4
+[Partida] ESQUERDA -> pontos 47, vidas 2, a bordo 3, entregues 1/4
+[Partida] ESQUERDA -> pontos 46, vidas 2, a bordo 3, entregues 1/4
+[Partida] CIMA -> pontos 45, vidas 2, a bordo 3, entregues 1/4
+[Partida] CIMA -> pontos 44, vidas 2, a bordo 0, entregues 4/4
+[Partida] vitória registrada no ranking: Você entrou no Top 5!
+[Tela] PartidaTela.hide()
+[Tela] RankingTela.show()
+[Tela] RankingTela.resize(800, 600)
+[Tela] PartidaTela.dispose()
+[Tela] RankingTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] RankingTela.dispose()
+[Tela] MenuTela.hide()
+[Tela] NovaPartidaTela.show()
+[Tela] NovaPartidaTela.resize(800, 600)
+[Tela] MenuTela.dispose()
+[Tela] NovaPartidaTela.hide()
+[Tela] PartidaTela.show()
+[Tela] PartidaTela.resize(800, 600)
+[Tela] NovaPartidaTela.dispose()
+[Partida] DIREITA -> pontos 44, vidas 2, a bordo 0, entregues 0/5
+[Partida] EMBARCAR -> pontos 44, vidas 1, a bordo 0, entregues 0/5
+[Partida] EMBARCAR -> pontos 44, vidas 0, a bordo 0, entregues 0/5
+[Tela] PartidaTela.hide()
+[Tela] MenuTela.show()
+[Tela] MenuTela.resize(800, 600)
+[Tela] PartidaTela.dispose()
+[Tela] MenuTela.resize(1084, 601)
+[Tela] MenuTela.pause()
+[MissaoMarte] dispose()
+[Tela] MenuTela.hide()
+[Tela] MenuTela.dispose()
+
+BUILD SUCCESSFUL in 1m 52s
+4 actionable tasks: 1 executed, 3 up-to-date
