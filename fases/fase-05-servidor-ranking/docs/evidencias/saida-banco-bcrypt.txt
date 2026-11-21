@@ -1,0 +1,10 @@
+NOME        | INICIO_DO_HASH | TAMANHO | TEM_A_SENHA
+piloto_um   | $2a$10$        | 60      | FALSE
+piloto_dois | $2a$10$        | 60      | FALSE
+(2 rows, 13 ms)
+NOME        | RESULTADO | PONTUACAO | DURACAO_SEGUNDOS
+piloto_um   | VITORIA   | 44        | 12
+piloto_um   | DERROTA   | 44        | 1
+piloto_dois | VITORIA   | 44        | 12
+piloto_dois | VITORIA   | 44        | 27
+(4 rows, 1 ms)

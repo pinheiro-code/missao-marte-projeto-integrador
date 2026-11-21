@@ -1,0 +1,37 @@
+$ ./gradlew --version
+Gradle 8.7
+JVM:          17.0.21.1 (Eclipse Adoptium 17.0.21.1+2)
+--- critério 10: diff dos testes da fase 4
+(fim, saida do grep=1)
+--- critério 11: diff domain
+saida=0
+--- diff infrastructure
+saida=0
+--- diff application
+Only in core/src/main/java/br/edu/unifor/missaomarte/application: servidor
+--- com.badlogic em domain/application/infrastructure
+saida=1
+--- System.getProperty no core
+saida=1
+--- critério 12: execute( no ServidorHttp
+97:                naThreadDoJogo.execute(() -> retorno.receber(pronta));
+102:                naThreadDoJogo.execute(() -> retorno.receber(Resposta.erro(JsonDoServidor.SEM_CONEXAO)));
+107:                naThreadDoJogo.execute(() -> retorno.receber(Resposta.erro(JsonDoServidor.SEM_CONEXAO)));
+--- postRunnable
+core/src/main/java/br/edu/unifor/missaomarte/gdx/MissaoMarteGame.java:71:        servidor = new ServidorHttp(Gdx.net, Gdx.app::postRunnable, enderecoDoServidor);
+core/src/main/java/br/edu/unifor/missaomarte/gdx/rede/ServidorHttp.java:22: * todo desfecho (resposta, falha ou cancelamento) volta pelo executor, que no jogo é o postRunnable.
+--- JSON por concatenação em gdx/rede
+saida=1
+--- API 26 nas linhas novas do core
+saida=1
+--- String.format ou "{ nas linhas novas de gdx/rede
+saida=1
+--- critério 14: senha e token nos logs do jogo
+/tmp/mm-provas/run-a.log:0
+/tmp/mm-provas/run-b.log:0
+/tmp/mm-provas/run-c.log:0
+/tmp/mm-provas/run-d.log:0
+--- critério 15 (na raiz)
+saida=1
+--- e-mail dos commits
+(pessoal)@gmail.com
