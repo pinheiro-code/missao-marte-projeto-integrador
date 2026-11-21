@@ -3,6 +3,8 @@ package br.edu.unifor.missaomarte.gdx;
 import br.edu.unifor.missaomarte.application.EventoJogo;
 import br.edu.unifor.missaomarte.application.GameSession;
 import br.edu.unifor.missaomarte.application.ResultadoTurno;
+import br.edu.unifor.missaomarte.application.servidor.EnvioDaPartida;
+import br.edu.unifor.missaomarte.application.servidor.PartidaConcluida;
 import br.edu.unifor.missaomarte.domain.Acao;
 import br.edu.unifor.missaomarte.domain.Missao;
 import br.edu.unifor.missaomarte.domain.Posicao;
@@ -19,6 +21,7 @@ import java.util.List;
 /**
  * A partida: traduz tecla em Acao, chama a GameSession e reage aos eventos do turno com som e efeito.
  * Não decide regra nenhuma (nem a colisão): o mundo é do MundoRenderer, o painel é do Hud.
+ * No fim, o convidado grava a vitória no ranking local; o logado envia vitória e derrota ao servidor.
  */
 public class PartidaTela extends TelaBase {
 
@@ -45,6 +48,7 @@ public class PartidaTela extends TelaBase {
     private boolean registrado;
     private boolean saiu;
     private List<String> resumo;
+    private EnvioDaPartida envio;
 
     /** A tela guarda a Missao que a fábrica criou só para desenhar o mapa; quem muda o estado é a sessão. */
     public PartidaTela(MissaoMarteGame jogo, GameSession sessao, Missao missao) {
@@ -107,7 +111,9 @@ public class PartidaTela extends TelaBase {
                 + ", entregues " + sessao.entregues() + "/" + sessao.total());
         if (sessao.acabou()) {
             repeticao.parar();
-            if (sessao.venceu()) {
+            if (jogo.logado()) {
+                enviarResultado();
+            } else if (sessao.venceu()) {
                 registrarVitoria();
             }
         }
@@ -151,8 +157,15 @@ public class PartidaTela extends TelaBase {
     }
 
     private boolean teclaNoFim(int tecla) {
+        if (envio != null && tecla == Keys.R) {
+            return envio.reenviar();
+        }
         if (tecla != Keys.ENTER && tecla != Keys.NUMPAD_ENTER) {
             return false;
+        }
+        if (envio != null && !envio.podeContinuar()) {
+            // Enter ignorado enquanto o resultado está indo para o servidor
+            return true;
         }
         saiu = true;
         jogo.trocarTela(sessao.venceu() ? new RankingTela(jogo, resumo) : new MenuTela(jogo));
@@ -174,13 +187,29 @@ public class PartidaTela extends TelaBase {
             situacao = "Não foi possível salvar o ranking: " + e.getCause().getMessage();
         }
         Gdx.app.log(TAG, "vitória registrada no ranking com " + sessao.duracaoSegundos() + " s: " + situacao);
+        montarResumo();
+        resumo.add(situacao);
+    }
+
+    /** Logado: uma vez por partida, vitória ou derrota; o estado do envio aparece no fim. */
+    private void enviarResultado() {
+        if (envio != null) {
+            return;
+        }
+        envio = new EnvioDaPartida(jogo.servidor(), jogo.sessao(), PartidaConcluida.de(sessao), jogo::sessaoExpirada);
+        Gdx.app.log(TAG, "enviando o resultado ao servidor");
+        if (sessao.venceu()) {
+            montarResumo();
+        }
+    }
+
+    private void montarResumo() {
         resumo = new ArrayList<>();
         resumo.add("Piloto: " + sessao.piloto() + " (" + sessao.dificuldade() + ")");
         resumo.add("Pontuação final: " + sessao.pontos());
         resumo.add("Movimentos: " + sessao.movimentos());
         resumo.add("Tempo de jogo: " + sessao.duracaoSegundos() + " s");
         resumo.add("Passageiros resgatados: " + sessao.entregues());
-        resumo.add(situacao);
     }
 
     @Override
@@ -263,19 +292,39 @@ public class PartidaTela extends TelaBase {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         formas().begin(ShapeType.Filled);
         formas().setColor(0.02f, 0.02f, 0.06f, 0.85f);
-        formas().rect(96, 230, 368, 140);
+        formas().rect(96, 200, 368, 190);
         formas().end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
         batch().begin();
         if (sessao.venceu()) {
-            texto("VITÓRIA! Missão cumprida.", 130, 340, Color.GREEN);
-            texto("Tempo: " + sessao.duracaoSegundos() + " s   Pontos: " + sessao.pontos(), 130, 310, Color.WHITE);
-            texto("Enter: ver o ranking", 130, 270, Color.WHITE);
+            texto("VITÓRIA! Missão cumprida.", 130, 370, Color.GREEN);
+            texto("Tempo: " + sessao.duracaoSegundos() + " s   Pontos: " + sessao.pontos(), 130, 340, Color.WHITE);
         } else {
-            texto("GAME OVER", 130, 340, Color.RED);
-            texto(mensagens.isEmpty() ? "" : mensagens.get(mensagens.size() - 1), 130, 310, Color.WHITE);
-            texto("Enter: voltar ao menu", 130, 270, Color.WHITE);
+            texto("GAME OVER", 130, 370, Color.RED);
+            texto(mensagens.isEmpty() ? "" : mensagens.get(mensagens.size() - 1), 130, 340, Color.WHITE);
+        }
+        if (envio != null) {
+            desenharEnvio();
+        }
+        String destino = sessao.venceu() ? "ver o ranking" : "voltar ao menu";
+        if (envio != null && !envio.podeContinuar()) {
+            texto("Aguarde o envio...", 130, 235, Color.LIGHT_GRAY);
+        } else if (envio != null && envio.estado() == EnvioDaPartida.Estado.FALHOU) {
+            texto("R: tentar de novo     Enter: " + destino, 130, 235, Color.WHITE);
+        } else {
+            texto("Enter: " + destino, 130, 235, Color.WHITE);
         }
         batch().end();
+    }
+
+    private void desenharEnvio() {
+        switch (envio.estado()) {
+            case ENVIANDO -> texto("Enviando o resultado...", 130, 305, Color.SKY);
+            case ENVIADO -> texto("Resultado enviado.", 130, 305, Color.GREEN);
+            case FALHOU -> {
+                texto("Falha no envio:", 130, 305, Color.YELLOW);
+                texto(envio.erro(), 130, 280, Color.YELLOW);
+            }
+        }
     }
 }

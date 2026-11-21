@@ -2,6 +2,9 @@ package br.edu.unifor.missaomarte.gdx;
 
 import br.edu.unifor.missaomarte.application.MissaoFactory;
 import br.edu.unifor.missaomarte.application.RankingService;
+import br.edu.unifor.missaomarte.application.servidor.ServidorDoJogo;
+import br.edu.unifor.missaomarte.application.servidor.Sessao;
+import br.edu.unifor.missaomarte.gdx.rede.ServidorHttp;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,10 +15,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import java.time.Clock;
 import java.util.Random;
+import java.util.function.Supplier;
 
 /**
  * O jogo: cria uma vez os recursos que as telas dividem (inclusive imagens e sons) e troca de tela.
- * Fábrica, ranking, sorteio, relógio e a escolha do áudio chegam prontos do launcher.
+ * Fábrica, ranking, sorteio, relógio, a escolha do áudio e o endereço do servidor chegam prontos do launcher.
+ * É o único dono da Sessao: com ela o jogo está no modo logado; sem ela, no modo convidado.
  */
 public class MissaoMarteGame extends Game {
 
@@ -28,6 +33,7 @@ public class MissaoMarteGame extends Game {
     private final Random random;
     private final Clock clock;
     private final boolean comSom;
+    private final Supplier<String> enderecoDoServidor;
 
     private OrthographicCamera camera;
     private FitViewport viewport;
@@ -36,13 +42,17 @@ public class MissaoMarteGame extends Game {
     private BitmapFont fonte;
     private Recursos recursos;
     private TocadorDeSom tocador;
+    private ServidorDoJogo servidor;
+    private Sessao sessao;
 
-    public MissaoMarteGame(MissaoFactory fabrica, RankingService ranking, Random random, Clock clock, boolean comSom) {
+    public MissaoMarteGame(MissaoFactory fabrica, RankingService ranking, Random random, Clock clock, boolean comSom,
+                           Supplier<String> enderecoDoServidor) {
         this.fabrica = fabrica;
         this.ranking = ranking;
         this.random = random;
         this.clock = clock;
         this.comSom = comSom;
+        this.enderecoDoServidor = enderecoDoServidor;
     }
 
     @Override
@@ -57,6 +67,8 @@ public class MissaoMarteGame extends Game {
         recursos = new Recursos(comSom);
         recursos.carregar();
         tocador = new TocadorDeSom(recursos, comSom);
+        // Gdx.net e Gdx.app só existem depois que a aplicação abriu, por isso o adaptador nasce aqui
+        servidor = new ServidorHttp(Gdx.net, Gdx.app::postRunnable, enderecoDoServidor);
         trocarTela(new MenuTela(this));
     }
 
@@ -84,6 +96,35 @@ public class MissaoMarteGame extends Game {
         formas.dispose();
         fonte.dispose();
         recursos.dispose();
+    }
+
+    public void entrar(Sessao nova) {
+        sessao = nova;
+        Gdx.app.log(TAG, "entrou como " + nova.nome());
+    }
+
+    public void sairDaConta() {
+        sessao = null;
+        Gdx.app.log(TAG, "saiu da conta");
+    }
+
+    /** 401 numa rota protegida: descarta a sessão e volta ao menu do convidado com o aviso. */
+    public void sessaoExpirada() {
+        sairDaConta();
+        trocarTela(new MenuTela(this, "Sessão expirada. Entre de novo."));
+    }
+
+    public boolean logado() {
+        return sessao != null;
+    }
+
+    /** null no modo convidado. */
+    public Sessao sessao() {
+        return sessao;
+    }
+
+    public ServidorDoJogo servidor() {
+        return servidor;
     }
 
     public MissaoFactory fabrica() {

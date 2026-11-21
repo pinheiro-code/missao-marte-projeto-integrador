@@ -13,13 +13,18 @@ import java.util.Random;
 /** Composition root do desktop: monta as peças e abre a janela. */
 public class DesktopLauncher {
 
+    private static final String SERVIDOR_PADRAO = "http://localhost:8080";
+
     public static void main(String[] args) {
         Random random = criarRandom(System.getProperty("missaomarte.semente"));
         // -Dmissaomarte.semaudio=true: para máquina sem dispositivo de som
         boolean semAudio = Boolean.parseBoolean(System.getProperty("missaomarte.semaudio"));
         Clock clock = Clock.systemDefaultZone();
         RankingService ranking = new RankingService(new FileRankingRepository(Path.of("ranking.json")), clock);
-        MissaoMarteGame jogo = new MissaoMarteGame(new MissaoFactory(random), ranking, random, clock, !semAudio);
+        // -Dmissaomarte.servidor=http://host:porta; vazio ou ausente vale o servidor local
+        String endereco = enderecoDoServidor(System.getProperty("missaomarte.servidor"));
+        MissaoMarteGame jogo = new MissaoMarteGame(new MissaoFactory(random), ranking, random, clock, !semAudio,
+                () -> endereco);
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("Missão Marte");
@@ -28,6 +33,10 @@ public class DesktopLauncher {
         config.setForegroundFPS(60);
         config.disableAudio(semAudio);
         new Lwjgl3Application(jogo, config);
+    }
+
+    private static String enderecoDoServidor(String valor) {
+        return valor == null || valor.isBlank() ? SERVIDOR_PADRAO : valor.trim();
     }
 
     /** O build.gradle repassa a propriedade vazia quando ninguém passou -D; vazia vale como ausente. */

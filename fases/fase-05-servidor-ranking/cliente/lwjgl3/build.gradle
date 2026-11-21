@@ -19,6 +19,7 @@ tasks.named('run') {
     // o -D do gradlew fica no processo do Gradle; sem repassar, o jogo não vê
     systemProperty 'missaomarte.semente', System.getProperty('missaomarte.semente', '')
     systemProperty 'missaomarte.semaudio', System.getProperty('missaomarte.semaudio', '')
+    systemProperty 'missaomarte.servidor', System.getProperty('missaomarte.servidor', '')
     if (System.getProperty('os.name').toLowerCase().contains('mac')) {
         jvmArgs '-XstartOnFirstThread'
     }

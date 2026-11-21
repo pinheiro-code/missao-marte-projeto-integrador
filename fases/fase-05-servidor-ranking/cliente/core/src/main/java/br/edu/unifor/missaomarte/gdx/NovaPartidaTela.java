@@ -6,7 +6,10 @@ import br.edu.unifor.missaomarte.domain.Missao;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 
-/** Nome do piloto e dificuldade. Enter decola, Esc volta ao menu. Aqui o M é letra, não atalho. */
+/**
+ * Nome do piloto e dificuldade. Enter decola, Esc volta ao menu. No modo convidado o M é letra, não atalho;
+ * no modo logado o nome é o da conta e só a dificuldade se escolhe.
+ */
 public class NovaPartidaTela extends TelaBase {
 
     /** Mapa fixo de -5 a 5 (11x11). */
@@ -23,7 +26,7 @@ public class NovaPartidaTela extends TelaBase {
 
     @Override
     protected boolean aceitaAtalhoDeSom() {
-        return false;
+        return jogo.logado();
     }
 
     @Override
@@ -32,10 +35,15 @@ public class NovaPartidaTela extends TelaBase {
         desenharFundo();
         texto("NOVA MISSÃO", 340, 500, Color.ORANGE);
         texto("Nome do piloto:", 200, 420, Color.LIGHT_GRAY);
-        texto(nome + "_", 340, 420, Color.WHITE);
+        if (jogo.logado()) {
+            texto(jogo.sessao().nome() + " (sua conta)", 340, 420, Color.WHITE);
+        } else {
+            texto(nome + "_", 340, 420, Color.WHITE);
+        }
         texto("Dificuldade:", 200, 370, Color.LIGHT_GRAY);
         texto("< " + dificuldade + " >", 340, 370, Color.WHITE);
-        texto("Digite o nome (Backspace apaga). Setas mudam a dificuldade.", 200, 280, Color.LIGHT_GRAY);
+        texto(jogo.logado() ? "Setas mudam a dificuldade."
+                : "Digite o nome (Backspace apaga). Setas mudam a dificuldade.", 200, 280, Color.LIGHT_GRAY);
         texto("Enter decola     Esc volta ao menu", 200, 250, Color.LIGHT_GRAY);
         batch().end();
     }
@@ -62,7 +70,7 @@ public class NovaPartidaTela extends TelaBase {
     /** Letras vêm aqui, já com acento e maiúscula; teclas de controle ficam no teclaApertada. */
     @Override
     protected boolean caractereDigitado(char caractere) {
-        if (Character.isISOControl(caractere) || nome.length() >= MAXIMO_NOME) {
+        if (jogo.logado() || Character.isISOControl(caractere) || nome.length() >= MAXIMO_NOME) {
             return false;
         }
         if (Character.isLetterOrDigit(caractere) || caractere == ' ' || caractere == '.') {
@@ -79,7 +87,7 @@ public class NovaPartidaTela extends TelaBase {
     }
 
     private void decolar() {
-        String piloto = nome.toString().trim();
+        String piloto = jogo.logado() ? jogo.sessao().nome() : nome.toString().trim();
         if (piloto.isEmpty()) {
             piloto = NOME_PADRAO;
         }
