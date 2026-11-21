@@ -36,7 +36,12 @@ public class DesktopLauncher {
     }
 
     private static String enderecoDoServidor(String valor) {
-        return valor == null || valor.isBlank() ? SERVIDOR_PADRAO : valor.trim();
+        if (valor == null || valor.isBlank()) {
+            return SERVIDOR_PADRAO;
+        }
+        String endereco = valor.trim();
+        // as rotas já começam com /: a barra final viraria //api
+        return endereco.endsWith("/") ? endereco.substring(0, endereco.length() - 1) : endereco;
     }
 
     /** O build.gradle repassa a propriedade vazia quando ninguém passou -D; vazia vale como ausente. */
