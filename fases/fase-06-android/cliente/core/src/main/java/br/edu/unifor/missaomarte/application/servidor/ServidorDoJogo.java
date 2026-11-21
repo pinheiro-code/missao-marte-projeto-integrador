@@ -19,4 +19,13 @@ public interface ServidorDoJogo {
 
     /** As 10 partidas mais recentes do jogador. */
     void carregarHistorico(Sessao sessao, Retorno<List<PartidaRegistrada>> retorno);
+
+    /**
+     * GET /api/saude num servidor que ainda não foi salvo; urlBase vem sempre de uma
+     * ConfiguracaoDoServidor validada. O padrão responde erro, para quem não sabe testar (o falso dos
+     * testes da fase 5) continuar valendo sem mudança; o ServidorHttp faz a chamada de verdade.
+     */
+    default void testarConexao(String urlBase, Retorno<Boolean> retorno) {
+        retorno.receber(Resposta.erro("Este servidor não sabe testar a conexão."));
+    }
 }

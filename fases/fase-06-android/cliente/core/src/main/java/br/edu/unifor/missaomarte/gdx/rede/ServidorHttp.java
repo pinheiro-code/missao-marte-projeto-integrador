@@ -74,11 +74,30 @@ public class ServidorHttp implements ServidorDoJogo {
                 json::lerHistorico, retorno);
     }
 
-    /** sessao null: rota pública, sem Authorization. corpo null: sem conteúdo. */
+    /** Não usa o endereço salvo: testa o que está no formulário, antes de salvar. */
+    @Override
+    public void testarConexao(String urlBase, Retorno<Boolean> retorno) {
+        enviar(urlBase, HttpMethods.GET, "/api/saude", null, null, ServidorHttp::lerSaude, retorno);
+    }
+
+    /** Um 200 de outro programa na mesma porta não conta: o corpo tem de ser o da rota de saúde. */
+    private static Boolean lerSaude(String corpo) {
+        if (corpo == null || !corpo.replace(" ", "").contains("\"status\":\"ok\"")) {
+            throw new IllegalArgumentException("não é a rota de saúde do Missão Marte");
+        }
+        return Boolean.TRUE;
+    }
+
     private <T> void enviar(String metodo, String caminho, String corpo, Sessao sessao,
                             Function<String, T> conversor, Retorno<T> retorno) {
+        enviar(endereco.get(), metodo, caminho, corpo, sessao, conversor, retorno);
+    }
+
+    /** sessao null: rota pública, sem Authorization. corpo null: sem conteúdo. */
+    private <T> void enviar(String base, String metodo, String caminho, String corpo, Sessao sessao,
+                            Function<String, T> conversor, Retorno<T> retorno) {
         HttpRequest pedido = new HttpRequest(metodo);
-        pedido.setUrl(endereco.get() + caminho);
+        pedido.setUrl(base + caminho);
         pedido.setTimeOut(TEMPO_LIMITE_MS);
         pedido.setHeader("Accept", "application/json");
         if (corpo != null) {

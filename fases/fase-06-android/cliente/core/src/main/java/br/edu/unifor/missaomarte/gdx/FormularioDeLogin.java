@@ -55,6 +55,26 @@ public class FormularioDeLogin {
         campo = campo == Campo.NOME ? Campo.SENHA : Campo.NOME;
     }
 
+    /** O toque num campo só o seleciona; a digitação continua pelo digitar ou pelo definirTexto. */
+    public void selecionarCampo(Campo alvo) {
+        campo = alvo;
+    }
+
+    /**
+     * O texto da caixa nativa do celular: seleciona o campo, limpa e aplica as mesmas regras do
+     * digitar a cada caractere (o que não é aceito ou passa do limite é descartado).
+     */
+    public void definirTexto(Campo alvo, String texto) {
+        campo = alvo;
+        (alvo == Campo.NOME ? nome : senha).setLength(0);
+        if (texto == null) {
+            return;
+        }
+        for (int i = 0; i < texto.length(); i++) {
+            digitar(texto.charAt(i));
+        }
+    }
+
     public void alternarModo() {
         criarConta = !criarConta;
     }
