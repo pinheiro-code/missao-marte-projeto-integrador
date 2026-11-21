@@ -90,7 +90,8 @@ public class Hud {
         float y = 370;
         fonte.setColor(Color.LIGHT_GRAY);
         for (String mensagem : mensagens) {
-            GlyphLayout bloco = fonte.draw(batch, mensagem, PAINEL_X, y, PAINEL_LARGURA, Align.left, true);
+            GlyphLayout bloco = fonte.draw(batch, TextoDesenhavel.de(mensagem, fonte.getData()), PAINEL_X, y,
+                    PAINEL_LARGURA, Align.left, true);
             y -= bloco.height + 10;
         }
     }
