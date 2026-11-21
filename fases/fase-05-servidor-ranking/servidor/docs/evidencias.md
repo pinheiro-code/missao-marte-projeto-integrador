@@ -177,7 +177,40 @@ $ cat settings.gradle
 rootProject.name = 'missao-marte-servidor'
 ```
 
-## 8. Problemas encontrados e como foram resolvidos
+## 8. Só o servidor mudou, sem segredo, com o e-mail pessoal
+
+Na raiz da worktree:
+
+```text
+$ git diff --name-only origin/main...HEAD | grep -v '^fases/fase-05-servidor-ranking/servidor/'
+(nada)
+$ git grep -niE "segredo|secret" -- fases/fase-05-servidor-ranking/servidor
+```
+
+O `git grep` devolve só: o código que lê a variável e monta a chave (`SegurancaConfig.java`, linhas 6, 7,
+87 a 111), o comentário e a linha `missaomarte.jwt.segredo=${MISSAOMARTE_JWT_SEGREDO:}` do
+`application.properties`, a documentação (`README.md` e esta página) e o segredo de teste em
+`src/test/resources/application-test.properties`. A única outra linha é
+`ProtecaoApiTest.java:12` e `:47`, o import e o uso de `SecretKeySpec` que montam a chave **falsa** do
+teste de token falsificado (de propósito diferente da chave de teste, para o servidor recusar).
+
+```text
+$ git log --format='%ae' origin/main..HEAD | sort -u
+(um e-mail pessoal, nenhum @nibo.com.br)
+```
+
+## 9. Documentação
+
+```text
+$ grep -c "/api/" README.md
+12
+$ grep -n "não executa a lógica do jogo" README.md
+157:- O servidor **não executa a lógica do jogo**: ele recebe o resultado que o cliente envia e não prova
+$ ls requests.http docs/roteiro-api.sh docs/evidencias.md
+docs/evidencias.md  docs/roteiro-api.sh  requests.http
+```
+
+## 10. Problemas encontrados e como foram resolvidos
 
 | problema | como apareceu | solução |
 |---|---|---|
