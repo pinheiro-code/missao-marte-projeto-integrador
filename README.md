@@ -1,4 +1,3 @@
-
 # Missão Marte: Projeto Integrador
 
 Projeto Integrador de Projeto e Arquitetura de Sistemas (Unifor, 2026.2). A equipe evoluiu o jogo **Missão Marte Unifor**, que nasceu como um programa Java de console, em fases: refatoração em camadas, build com Gradle, interface gráfica com libGDX, servidor de ranking com Spring Boot, versão Android com controles por toque e uma melhoria própria (cor da nave).
