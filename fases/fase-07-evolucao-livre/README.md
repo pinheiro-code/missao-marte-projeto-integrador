@@ -28,7 +28,7 @@ cd servidor
 
 # cliente
 cd cliente
-.\gradlew clean build                   # 282 testes, sem precisar do SDK
+.\gradlew clean build                   # 289 testes, sem precisar do SDK
 .\gradlew :lwjgl3:run --console=plain   # desktop 800x600, sem toque
 .\gradlew :lwjgl3:run "-Dmissaomarte.toque=true" "-Dmissaomarte.janela=1200x540" --console=plain
 ```
