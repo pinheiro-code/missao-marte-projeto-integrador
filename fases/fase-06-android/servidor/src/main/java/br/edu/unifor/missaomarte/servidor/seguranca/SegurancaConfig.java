@@ -59,6 +59,7 @@ public class SegurancaConfig {
         return new RequestMatcher[] {
                 rota.matcher(HttpMethod.POST, "/api/usuarios"),
                 rota.matcher(HttpMethod.POST, "/api/auth/login"),
+                rota.matcher(HttpMethod.GET, "/api/saude"),
                 rota.matcher("/error")
         };
     }
