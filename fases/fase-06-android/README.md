@@ -22,7 +22,7 @@ o pacote `domain` é idêntico ao da fase 5 (mesmo hash, `docs/tutorial.md` seç
 
 ## Comandos
 
-No PowerShell use `.\gradlew.bat`; no Git Bash, `./gradlew`.
+No PowerShell use `.\gradlew.bat`; no Git Bash, `./gradlew`. No PowerShell 5.1, ponha `-D...` e `-P...` entre aspas: sem elas o valor é cortado no primeiro ponto.
 
 ```powershell
 # servidor (deixe este terminal aberto)
@@ -35,11 +35,11 @@ cd servidor
 # cliente (outro terminal)
 cd cliente
 .\gradlew --version                     # Gradle 8.7 e JVM 17
-.\gradlew clean build                   # 267 testes, sem precisar do SDK
+.\gradlew clean build                   # 269 testes, sem precisar do SDK
 .\gradlew :lwjgl3:run --console=plain   # desktop, igual à fase 5
-.\gradlew :lwjgl3:run -Dmissaomarte.toque=true -Dmissaomarte.janela=1200x540 --console=plain
+.\gradlew :lwjgl3:run "-Dmissaomarte.toque=true" "-Dmissaomarte.janela=1200x540" --console=plain
 .\gradlew :android:assembleDebug        # só com o SDK: android/build/outputs/apk/debug/android-debug.apk
-.\gradlew :android:assembleDebug -PservidorPadrao=http://192.168.0.10:8080
+.\gradlew :android:assembleDebug "-PservidorPadrao=http://192.168.0.10:8080"
 ```
 
 Instalar no celular (com a depuração USB ligada): `adb install -r android\build\outputs\apk\debug\android-debug.apk`.
@@ -74,7 +74,7 @@ dois menus, `F3` na tela de entrar (abre a configuração do servidor) e o contr
 | Partida | setas em cruz com Embarcar no meio, Som e Abortar em cima, na coluna à direita do mapa; segurar uma seta repete o movimento | |
 | Fim da partida | Continuar e, se o envio falhou, Reenviar | |
 | Ranking e histórico | Recarregar e Voltar | |
-| Entrar | Nome, Senha (caixa de senha no celular, sempre vazia), Criar conta ou Já tenho conta, Servidor, Entrar | |
+| Entrar | Nome, Senha (caixa de senha no celular, sempre vazia), Criar conta ou Já tenho conta, Servidor, Entrar, Voltar | |
 | Servidor | Endereço, Porta, HTTPS, Testar conexão, Salvar, Restaurar padrão, Voltar | `Tab` ou setas trocam o campo, `F2` HTTPS, `F5` testa, `Enter` salva, `F8` restaura, `Esc` volta |
 
 Tecla **Voltar** do Android: no menu fecha o jogo; na partida aborta (o mesmo caminho do `Esc`); no fim da

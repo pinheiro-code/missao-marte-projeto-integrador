@@ -19,7 +19,7 @@ cliente/
 │   │   ├── application        o da fase 5 sem API do Java 9+, e no pacote servidor a configuração e o endereço do servidor
 │   │   ├── infrastructure     o da fase 5 sem Files.readString/writeString
 │   │   └── gdx                telas com toque, botões virtuais, tela do servidor; gdx/rede tem o adaptador HTTP
-│   └── src/test/java/...      267 testes JUnit 5, sem janela, OpenGL, rede ou SDK
+│   └── src/test/java/...      269 testes JUnit 5, sem janela, OpenGL, rede ou SDK
 ├── lwjgl3/                    DesktopLauncher (-Dmissaomarte.toque, janela, servidor, semente, semaudio)
 ├── android/                   AndroidLauncher, AndroidManifest.xml, build.gradle e res/mipmap-* (ícone)
 └── tools/                     GeradorDeAssets.java e GeradorDeIcone.java
