@@ -164,6 +164,8 @@ if (missao.entregues() > entreguesAntes) {
 
 **Sprite pelo símbolo, sem `instanceof`.** `Imagem.doSimbolo(char)` traduz o símbolo que cada `ElementoMapa` já informa (`'@'`, `'L'`, `'#'`, `'X'`, `'P'`, `'E'`, `'T'`) e devolve `DESCONHECIDO` para qualquer outro. Um elemento novo no domínio aparece com a imagem genérica sem quebrar nada, e a escolha fica num `switch` testável sem janela, em vez de uma cadeia de `instanceof` que precisaria conhecer cada classe. O `ElementoMapa.simbolo()` faz o papel do `ObjetoRenderizavel#getSimbolo()` do enunciado (decisão da fase 3: criar outra interface mudaria o `domain`).
 
+**Fonte no jogo, não no `Recursos`.** A `BitmapFont` padrão (que já tem os acentos) continua sendo criada no `MissaoMarteGame.create()` e liberada no `dispose()`, como na fase 3; ela não vem de arquivo nosso, então não passa pelo `AssetManager`.
+
 **Atalho de silenciar central, com a tela de nome de fora.** O `M` é tratado uma vez, no `InputAdapter` da `TelaBase`, antes de a tela ver a tecla. Se cada tela tratasse, bastaria uma esquecer. A `NovaPartidaTela` devolve falso em `aceitaAtalhoDeSom()`, porque lá o `M` é letra do nome. Conferido: digitar `m` no nome inseriu a letra e não gerou a linha `Som: desligado` no log (captura `f4-nova-partida.png`).
 
 **Padrões usados.**
@@ -186,18 +188,18 @@ Mesmo ambiente da fase 3 (Git Bash com `JAVA_HOME` do JDK 17 e o `JAVA_TOOL_OPTI
 3. **Eventos em `application`.** `EventoJogo` novo; `ResultadoTurno` ganhou o segundo componente e o construtor antigo; `GameSession.jogar` ganhou as comparações de antes e depois. As saídas de `SAIR` e `INVALIDA` continuam com `new ResultadoTurno(mensagens)`, sem eventos. O `git diff --no-index` contra a fase 3 só tem duas linhas removidas: o `return new ResultadoTurno(mensagens);` do fim do `jogar` e a declaração do record.
 4. **Assets.** Escrevi o gerador e rodei `java tools/GeradorDeAssets.java` duas vezes, comparando o `sha1sum` dos 25 arquivos: iguais. A primeira versão escrevia as letras dos passageiros com `drawString`, que depende das fontes instaladas; troquei por letras de 3 x 5 pixels desenhadas à mão, para o resultado ser o mesmo em qualquer máquina.
 5. **Problema real: o compilador recusou o `load` com operador ternário.** `assets.load(caminho, som.musica() ? Music.class : Sound.class)` não compila: o tipo do ternário vira `Class<? extends ...>` e não casa com o genérico do `load`. Troquei por um `if`.
-6. **Testes.** Os 36 novos passaram no primeiro build depois do ajuste acima, junto com os 38 herdados: `74 0 0`. Antes de rodar, troquei um passo de tempo de 0,01 s por 0,02 s no `RepeticaoDeTeclaTest`, porque com `float` a soma `0,14 - 0,13 - 0,01` pode sobrar positiva e o teste dependeria do arredondamento.
+6. **Testes.** Os 36 novos passaram no primeiro build depois do ajuste acima, junto com os 38 herdados: `74 0 0`. Na revisão do diff entrou o 37º, a derrota por pontos zerados (o outro caminho de derrota da `GameSession`): `75 0 0`. Antes de rodar, troquei um passo de tempo de 0,01 s por 0,02 s no `RepeticaoDeTeclaTest`, porque com `float` a soma `0,14 - 0,13 - 0,01` pode sobrar positiva e o teste dependeria do arredondamento.
 7. **Problema real: a barra de entregas encostava no texto.** Na primeira captura (`f4-partida-inicio.png`) a barra de progresso ficava colada na linha "Entregas" e "Restantes no mapa" quase a tocava. Desci a barra e as linhas de baixo (captura `f4-semaudio.png`, já com o ajuste).
 8. **Execução com semente 4 e sons** (seção 8.5), depois **sem áudio** com a mesma semente e as mesmas teclas: os turnos repetiram linha a linha.
 
 ## 8.5 Testes e evidências
 
-**Testes (74: 38 herdados da fase 3 sem alteração e 36 novos; nenhum abre janela, usa OpenGL ou toca áudio).**
+**Testes (75: 38 herdados da fase 3 sem alteração e 37 novos; nenhum abre janela, usa OpenGL ou toca áudio).**
 
 | Classe | Testes | O que cobre |
 |---|---|---|
 | herdados (fase 3) | 38 | sessão, fábrica, ação, nave, posição, ranking em arquivo, ranking em memória, teclado, geometria |
-| `GameSessionEventosTest` | 12 | cada evento; borda sem movimento mas com ponto cobrado; embarcar sem passageiro sem evento; inválido e sair sem eventos; duração parada no fim (relógio manual); missão sem passageiro nasce vencida; construtor antigo do `ResultadoTurno` |
+| `GameSessionEventosTest` | 13 | cada evento; derrota por pontos zerados; borda sem movimento mas com ponto cobrado; embarcar sem passageiro sem evento; inválido e sair sem eventos; duração parada no fim (relógio manual); missão sem passageiro nasce vencida; construtor antigo do `ResultadoTurno` |
 | `AssetsTest` | 4 | cada imagem do catálogo existe e tem largura = quadro x quadros e altura = quadro (lida com `ImageIO`); cada som existe e é áudio válido (`AudioSystem.getAudioFileFormat`, sem tocar); uma única música; quadros mínimos do enunciado |
 | `ImagemTest` | 2 | símbolo de cada objeto do domínio para a imagem; símbolo desconhecido para a genérica |
 | `PosicoesVisuaisTest` | 4 | objeto novo não desliza; desliza meia célula em 1/24 s e para no alvo; diagonal em linha reta; esquece quem sumiu, por identidade |
@@ -208,7 +210,7 @@ Mesmo ambiente da fase 3 (Git Bash com `JAVA_HOME` do JDK 17 e o `JAVA_TOOL_OPTI
 
 `diff -r ../fase-03-libgdx/core/src/test core/src/test` só mostra `Only in` (arquivos novos).
 
-**`./gradlew clean build`** (inteiro em `docs/evidencias/saida-clean-build.txt`): `BUILD SUCCESSFUL`, e a soma dos relatórios dá `74 0 0`.
+**`./gradlew clean build`** (inteiro em `docs/evidencias/saida-clean-build.txt`): `BUILD SUCCESSFUL`, e a soma dos relatórios (comando no fim do mesmo arquivo) dá `75 0 0`.
 
 **Hash.** `docs/evidencias/hash-fase-03-x-fase-04.txt`: dos 20 arquivos de `domain`, `application` e `infrastructure` da fase 3, 18 dão `OK` e só `GameSession.java` e `ResultadoTurno.java` dão `FAILED`, que são os dois alterados de propósito; `EventoJogo.java` é o único novo. `diff -r` de `domain` e de `infrastructure` sai vazio.
 
@@ -247,15 +249,15 @@ Os pontos e vidas de cada turno são os mesmos da fase 3 com a mesma semente e a
 | Passo | Resultado | Evidência |
 |---|---|---|
 | 1. `--version` | Gradle 8.7, JVM 17.0.21.1 | `saida-clean-build.txt` |
-| 2. `clean build` | `BUILD SUCCESSFUL`, 74 testes, 0 falhas | `saida-clean-build.txt` |
+| 2. `clean build` | `BUILD SUCCESSFUL`, 75 testes, 0 falhas | `saida-clean-build.txt` |
 | 3. abre a janela e conta os assets | `17 imagens e 8 sons carregados`, nenhuma exceção no log | `saida-run-semente-4.txt` |
 | 4. menu com fundo, nave animada, música; `M` | `Som: desligado (M)` e `Som: ligado (M)` no log | `f4-menu.png`, `f4-menu-mudo.png` |
 | 5. `m` no nome | a letra entrou ("mArthurm_") e o log não mudou o som | `f4-nova-partida.png` |
 | 6. sprites, nave gira e desliza | nave apontando para a esquerda depois do `A` | `f4-deslizando.png` |
-| 7. segurar a tecla | um `A` segurado por 0,6 s deu 4 turnos (o primeiro e 3 repetições), de 28 a 25 pontos, 1 ponto cada | `saida-run-semente-4.txt` |
+| 7. segurar a tecla | o script segurou o `A` por 0,6 s (um único aperto, sem soltar) e o log mostra 4 turnos seguidos, de 28 a 25 pontos, 1 ponto cada: o primeiro do aperto e 3 repetições (o log não marca qual turno é repetição) | `saida-run-semente-4.txt` |
 | 8. embarque | brilho, "+10", vaga preenchida, `[EMBARQUE]` | `f4-embarque.png` |
 | 9. entrega | "Entregue!", barra em 1/4, `[MOVIMENTO, ENTREGA]` | `f4-entrega.png` |
-| 10. colisão | explosão, mapa deslocado (tremor), coração vazio, `[MOVIMENTO, COLISAO]` | `f4-colisao.png` |
+| 10. colisão | explosão, mapa deslocado (tremor), coração vazio, `[MOVIMENTO, COLISAO]`; sem texto "-pontos" (ver 8.6, item 6) | `f4-colisao.png` |
 | 11. vitória e derrota | caixa de vitória, ranking com resumo; derrota com caixa e Enter para o menu | `f4-vitoria.png`, `f4-ranking-resumo.png`, `f4-derrota.png` |
 | 12. tempo do resumo = tempo gravado | resumo "65 s" e `ranking.json` com `"tempoJogo":65` | `f4-ranking-resumo.png` |
 | 13. mesma semente, mesmo cenário | a execução sem áudio repetiu as 20 primeiras linhas de turno da execução com áudio | `saida-run-semaudio.txt` |
@@ -273,3 +275,5 @@ O que **não** foi verificado: o som e a música não foram ouvidos (a máquina 
 3. **Mensagens da aplicação em texto pronto.** Os eventos não carregam dados (quantos pontos, quantos entregues); a tela calcula a variação de pontos pela diferença da `GameSession`. Na fase 5 o servidor vai precisar de dados da partida, não de frases: eventos com dados seriam o caminho.
 4. **Sem tela de carregamento.** O `finishLoading()` trava a primeira imagem até carregar tudo. Com poucos arquivos é rápido no desktop; no Android (fase 6) uma tela com `AssetManager.update()` evita a tela preta.
 5. **Ciclo de vida do áudio no Android.** No desktop o `pause()` não para a música; no Android, ao ir para segundo plano, a música precisa pausar no `pause()` e voltar no `resume()` (fase 6).
+6. **Colisão sem texto de pontos.** O enunciado pede o texto flutuante com a variação de pontos na colisão ("-6"). Na regra da equipe a colisão tira uma vida, não pontos: o turno da colisão varia só o -1 do movimento, que o filtro de |variação| > 1 esconde. Mudar a regra para ter o texto está fora de cogitação; a alternativa seria mostrar a vida perdida ("-1 vida"), que ficou para depois.
+7. **Efeitos na posição lógica.** Explosão e brilho aparecem na célula de destino enquanto a nave ainda desliza (cerca de 80 ms), e o tremor também desloca o fundo, mostrando a cor de limpeza na borda por até 8 px. São só visuais.

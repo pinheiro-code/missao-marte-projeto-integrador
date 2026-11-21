@@ -45,3 +45,6 @@ OS:           Windows 11 10.0 amd64
 BUILD SUCCESSFUL in 3s
 12 actionable tasks: 12 executed
 exit=0
+
+$ cat core/build/test-results/test/*.xml | grep -o 'tests="[0-9]*" skipped="[0-9]*" failures="[0-9]*" errors="[0-9]*"' | awk ...
+75 0 0
