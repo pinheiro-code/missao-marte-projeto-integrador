@@ -139,6 +139,19 @@ class GameSessionEventosTest {
     }
 
     @Test
+    void pontosZeradosGeramDerrota() {
+        GameSession sessao = sessao(missao());
+        for (int i = 0; i < 29; i++) {
+            sessao.jogar(Acao.CIMA);
+        }
+
+        ResultadoTurno resultado = sessao.jogar(Acao.CIMA);
+
+        assertEquals(0, sessao.pontos());
+        assertEquals(List.of(EventoJogo.DERROTA), resultado.eventos(), "parada na borda: sem movimento, com derrota");
+    }
+
+    @Test
     void comandoInvalidoEAbortarNaoGeramEventos() {
         GameSession sessao = sessao(missao());
 

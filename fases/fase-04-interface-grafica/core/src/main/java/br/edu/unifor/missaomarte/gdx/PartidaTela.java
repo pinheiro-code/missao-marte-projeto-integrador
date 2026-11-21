@@ -77,7 +77,7 @@ public class PartidaTela extends TelaBase {
             return true;
         }
         jogarTurno(acao);
-        if (movimento(acao)) {
+        if (movimento(acao) && !sessao.acabou()) {
             repeticao.pressionar(tecla);
         }
         return true;
