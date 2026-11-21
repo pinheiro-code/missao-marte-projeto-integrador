@@ -1,0 +1,44 @@
+================================================================
+             MISSÃO MARTE UNIFOR - VERSÃO 10.0                  
+================================================================
+  Pilote sua nave, salve os passageiros e desvie dos perigos!   
+================================================================
+
+--- MENU PRINCIPAL ---
+1. Iniciar Nova Missão
+2. Visualizar Ranking Top 5
+3. Resetar Histórico de Ranking
+4. Sair do Jogo
+----------------------
+Escolha uma opção: 
+====== RANKING TOP 5 PILOTOS ======
+1. Ana - 70 pts | Dificuldade: Fácil | Coletados: 4 | Tempo: 0s | 2026-11-21 12:31:42
+===================================
+
+--- MENU PRINCIPAL ---
+1. Iniciar Nova Missão
+2. Visualizar Ranking Top 5
+3. Resetar Histórico de Ranking
+4. Sair do Jogo
+----------------------
+Escolha uma opção: Você realmente deseja limpar o histórico de ranking? (s/n): Ranking resetado com sucesso!
+
+--- MENU PRINCIPAL ---
+1. Iniciar Nova Missão
+2. Visualizar Ranking Top 5
+3. Resetar Histórico de Ranking
+4. Sair do Jogo
+----------------------
+Escolha uma opção: 
+====== RANKING TOP 5 PILOTOS ======
+ - Nenhum registro encontrado. Seja o primeiro a jogar!
+===================================
+
+--- MENU PRINCIPAL ---
+1. Iniciar Nova Missão
+2. Visualizar Ranking Top 5
+3. Resetar Histórico de Ranking
+4. Sair do Jogo
+----------------------
+Escolha uma opção: 
+Obrigado por jogar a Missão Marte Unifor!

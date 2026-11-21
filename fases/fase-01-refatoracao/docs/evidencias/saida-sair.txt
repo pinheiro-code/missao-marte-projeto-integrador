@@ -1,0 +1,60 @@
+================================================================
+             MISSÃO MARTE UNIFOR - VERSÃO 10.0                  
+================================================================
+  Pilote sua nave, salve os passageiros e desvie dos perigos!   
+================================================================
+
+--- MENU PRINCIPAL ---
+1. Iniciar Nova Missão
+2. Visualizar Ranking Top 5
+3. Resetar Histórico de Ranking
+4. Sair do Jogo
+----------------------
+Escolha uma opção: 
+Digite o nome do piloto: Escolha a Dificuldade (facil/medio/dificil): Tamanho do mapa (ex: 5 para mapa de -5 a +5): 
+Iniciando missão na dificuldade Fácil...
+Pressione Enter para decolar!
+
+Mapa da Missão (Pontos: 30) - Piloto: Ana
+     -2 -1  0  1  2
+     __ __ __ __ __
+ -2|  .  .  E  .  .
+ -1|  .  P  .  .  #
+  0|  .  .  @  .  .
+  1|  .  .  E  P  .
+  2|  X  .  .  .  .
+Legenda: @=Nave, P=Professor, E=Engenheiro, #=Asteroide, X=Inimigo, L=Plataforma de Pouso, .=Vazio
+Comandos: w/s/a/d (mover), c (embarcar), q (sair)
+Passageiros na superfície marciana:
+ - Dr. Silva (Professor) em (1,1)
+ - Eng. Rosa (Engenheiro) em (0,-2)
+ - Dr. Lima (Professor) em (-1,-1)
+ - Eng. Carlos (Engenheiro) em (0,1)
+Nave em (0,0) | Pontos: 30 | Vidas: 3 | A bordo: 0/5 | Entregues: 0 | Restantes: 4 | Total: 4
+Comando (w/s/a/d/c/q): 
+Mapa da Missão (Pontos: 29) - Piloto: Ana
+     -2 -1  0  1  2
+     __ __ __ __ __
+ -2|  .  .  E  .  .
+ -1|  .  P  .  .  #
+  0|  .  .  L  @  .
+  1|  .  .  E  P  .
+  2|  .  X  .  .  .
+Legenda: @=Nave, P=Professor, E=Engenheiro, #=Asteroide, X=Inimigo, L=Plataforma de Pouso, .=Vazio
+Comandos: w/s/a/d (mover), c (embarcar), q (sair)
+Passageiros na superfície marciana:
+ - Dr. Silva (Professor) em (1,1)
+ - Eng. Rosa (Engenheiro) em (0,-2)
+ - Dr. Lima (Professor) em (-1,-1)
+ - Eng. Carlos (Engenheiro) em (0,1)
+Nave em (1,0) | Pontos: 29 | Vidas: 3 | A bordo: 0/5 | Entregues: 0 | Restantes: 4 | Total: 4
+Comando (w/s/a/d/c/q): Missão abortada pelo piloto.
+
+--- MENU PRINCIPAL ---
+1. Iniciar Nova Missão
+2. Visualizar Ranking Top 5
+3. Resetar Histórico de Ranking
+4. Sair do Jogo
+----------------------
+Escolha uma opção: 
+Obrigado por jogar a Missão Marte Unifor!
