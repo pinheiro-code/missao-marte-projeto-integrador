@@ -19,7 +19,7 @@ cliente/
 │   │   ├── application        o da fase 6; novo na fase 7: o pacote preferencias (CorDaNave, PreferenciaDaNave)
 │   │   ├── infrastructure     o da fase 5 sem Files.readString/writeString
 │   │   └── gdx                telas com toque, botões virtuais, tela do servidor; na fase 7, a cor na Nova partida e a tinta no MundoRenderer
-│   └── src/test/java/...      288 testes JUnit 5 (269 da fase 6 e 19 novos), sem janela, OpenGL, rede ou SDK
+│   └── src/test/java/...      289 testes JUnit 5 (269 da fase 6 e 20 novos), sem janela, OpenGL, rede ou SDK
 ├── lwjgl3/                    DesktopLauncher (-Dmissaomarte.toque, janela, servidor, semente, semaudio)
 ├── android/                   AndroidLauncher, AndroidManifest.xml, build.gradle e res/mipmap-* (ícone)
 └── tools/                     GeradorDeAssets.java e GeradorDeIcone.java
